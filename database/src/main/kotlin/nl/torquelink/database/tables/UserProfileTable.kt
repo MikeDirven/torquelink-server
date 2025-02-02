@@ -1,7 +1,7 @@
 package nl.torquelink.database.tables
 
 import nl.torquelink.database.interfaces.CoreTable
-import nl.torquelink.domain.enums.CountryCode
+import nl.torquelink.shared.enums.CountryCode
 import org.jetbrains.exposed.sql.javatime.date
 
 object UserProfileTable : CoreTable("TL_D_User_Profiles") {

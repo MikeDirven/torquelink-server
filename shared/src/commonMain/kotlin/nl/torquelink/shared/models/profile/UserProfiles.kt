@@ -1,7 +1,7 @@
 package nl.torquelink.shared.models.profile
 
 import kotlinx.serialization.Serializable
-import nl.torquelink.domain.enums.CountryCode
+import nl.torquelink.shared.enums.CountryCode
 import nl.torquelink.shared.serializers.LocalDateSerializer
 import java.time.LocalDate
 

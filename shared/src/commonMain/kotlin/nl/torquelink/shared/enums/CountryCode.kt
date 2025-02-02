@@ -1,6 +1,6 @@
-package nl.torquelink.domain.enums
+package nl.torquelink.shared.enums
 
-import nl.torquelink.domain.enums.CountryCode.entries
+import nl.torquelink.shared.enums.CountryCode.entries
 
 
 enum class CountryCode(
