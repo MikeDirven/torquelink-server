@@ -1,0 +1,15 @@
+# Project exclude paths
+/.gradle/
+/authentication/build/
+/authentication/build/classes/kotlin/main/
+/build/
+/database/build/
+/database/build/classes/kotlin/main/
+/domain/build/
+/domain/build/classes/kotlin/main/
+/opendata/build/
+/opendata/build/classes/kotlin/main/
+/server/build/
+/server/build/classes/kotlin/main/
+/shared/build/
+/shared/build/classes/kotlin/jvm/main/
