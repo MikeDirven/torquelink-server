@@ -1,8 +1,8 @@
-package nl.torquelink.database.dao
+package nl.torquelink.database.dao.identity
 
 import nl.torquelink.database.interfaces.IdentityEntity
 import nl.torquelink.database.interfaces.IdentityEntityClass
-import nl.torquelink.database.tables.IdentityTable
+import nl.torquelink.database.tables.identity.IdentityTable
 import org.jetbrains.exposed.dao.id.EntityID
 import java.util.*
 

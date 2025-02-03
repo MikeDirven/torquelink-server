@@ -1,4 +1,4 @@
-package nl.torquelink.database.tables
+package nl.torquelink.database.tables.identity
 
 import nl.torquelink.database.config.CipherConfig
 import nl.torquelink.database.interfaces.IdentityTable

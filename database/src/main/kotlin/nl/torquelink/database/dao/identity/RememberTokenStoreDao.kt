@@ -1,8 +1,8 @@
-package nl.torquelink.database.dao
+package nl.torquelink.database.dao.identity
 
 import nl.torquelink.database.interfaces.CoreEntity
 import nl.torquelink.database.interfaces.CoreEntityClass
-import nl.torquelink.database.tables.RememberTokenStoreTable
+import nl.torquelink.database.tables.identity.RememberTokenStoreTable
 import org.jetbrains.exposed.dao.id.EntityID
 
 class RememberTokenStoreDao(id : EntityID<Long>) : CoreEntity(id, RememberTokenStoreTable) {
@@ -10,4 +10,5 @@ class RememberTokenStoreDao(id : EntityID<Long>) : CoreEntity(id, RememberTokenS
 
     var identity by IdentityDao referencedOn RememberTokenStoreTable.identity
     var token by RememberTokenStoreTable.token
+    var expirationDate by RememberTokenStoreTable.expirationDate
 }

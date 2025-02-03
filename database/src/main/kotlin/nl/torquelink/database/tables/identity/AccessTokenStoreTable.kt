@@ -1,4 +1,4 @@
-package nl.torquelink.database.tables
+package nl.torquelink.database.tables.identity
 
 import nl.torquelink.database.interfaces.CoreTable
 import org.jetbrains.exposed.sql.Column

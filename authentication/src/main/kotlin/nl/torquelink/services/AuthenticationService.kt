@@ -1,19 +1,20 @@
 package nl.torquelink.services
 
 import io.ktor.server.application.*
-import nl.torquelink.database.dao.AccessTokenStoreDao
-import nl.torquelink.database.dao.IdentityDao
-import nl.torquelink.database.dao.RememberTokenStoreDao
+import nl.torquelink.database.dao.identity.AccessTokenStoreDao
+import nl.torquelink.database.dao.identity.IdentityDao
+import nl.torquelink.database.dao.identity.RememberTokenStoreDao
 import nl.torquelink.database.interfaces.DatabaseHolder
-import nl.torquelink.database.tables.AccessTokenStoreTable
-import nl.torquelink.database.tables.IdentityTable
-import nl.torquelink.database.tables.RememberTokenStoreTable
+import nl.torquelink.database.tables.identity.AccessTokenStoreTable
+import nl.torquelink.database.tables.identity.IdentityTable
+import nl.torquelink.database.tables.identity.RememberTokenStoreTable
 import nl.torquelink.exception.AuthExceptions
 import nl.torquelink.interfaces.TokenGenerator
 import nl.torquelink.shared.models.auth.AuthenticationResponses
 import nl.torquelink.shared.models.auth.RegistrationRequests
 import org.jetbrains.exposed.sql.or
 import java.sql.SQLException
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.concurrent.atomic.AtomicReference
 
@@ -69,6 +70,7 @@ class AuthenticationService internal constructor (
                     isLockedOut && it <= LocalDateTime.now() ->
                         resetLockedOut()
                 }
+
                 return
             }
 
@@ -169,9 +171,16 @@ class AuthenticationService internal constructor (
                 RememberTokenStoreTable.token eq token
             }.singleOrNull() ?: throw AuthExceptions.RememberTokenInvalided
 
+            // Check expiration date
+            if(rememberToken.expirationDate < LocalDate.now())
+                throw AuthExceptions.RememberTokenInvalided
+
             rememberToken.identity.handleLoadedAuthenticationRequest(
                 rememberToken.identity.passwordHash
             )
+
+            // Update expiration date
+            rememberToken.expirationDate = LocalDate.now().plusYears(1)
 
             rememberToken.identity to rememberToken.identity.generateTokens(true)
         }

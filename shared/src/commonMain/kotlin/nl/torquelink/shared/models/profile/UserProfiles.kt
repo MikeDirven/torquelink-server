@@ -9,32 +9,41 @@ import java.time.LocalDate
 sealed interface UserProfiles {
     val firstName: String
     val lastName: String
-    @Serializable(with = LocalDateSerializer::class) val datOfBirth: LocalDate?
+    @Serializable(with = LocalDateSerializer::class) val dateOfBirth: LocalDate?
     val phoneNumber: String?
     val country: CountryCode?
     val city: String?
-    val avatar: String
+
+    @Serializable
+    data class UserProfileNewDto(
+        override val firstName: String,
+        override val lastName: String,
+        @Serializable(with = LocalDateSerializer::class) override val dateOfBirth: LocalDate,
+        override val phoneNumber: String,
+        override val country: CountryCode,
+        override val city: String,
+    ) : UserProfiles
 
     @Serializable
     data class UserProfileDto(
         override val firstName: String,
         override val lastName: String,
-        @Serializable(with = LocalDateSerializer::class) override val datOfBirth: LocalDate?,
+        @Serializable(with = LocalDateSerializer::class) override val dateOfBirth: LocalDate?,
         override val phoneNumber: String?,
         override val country: CountryCode?,
         override val city: String?,
-        override val avatar: String
+        val avatar: String
     ) : UserProfiles
 
     @Serializable
     data class UserProfileWithSettingsDto(
         override val firstName: String,
         override val lastName: String,
-        @Serializable(with = LocalDateSerializer::class) override val datOfBirth: LocalDate?,
+        @Serializable(with = LocalDateSerializer::class) override val dateOfBirth: LocalDate?,
         override val phoneNumber: String?,
         override val country: CountryCode?,
         override val city: String?,
-        override val avatar: String,
+        val avatar: String,
 
         val emailIsPublic: Boolean,
         val firstNameIsPublic: Boolean,

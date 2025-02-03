@@ -1,12 +1,13 @@
-package nl.torquelink.database.tables
+package nl.torquelink.database.tables.users
 
 import nl.torquelink.database.interfaces.CoreTable
+import nl.torquelink.database.tables.identity.IdentityTable
 import nl.torquelink.shared.enums.CountryCode
 import org.jetbrains.exposed.sql.javatime.date
 
 object UserProfileTable : CoreTable("TL_D_User_Profiles") {
     override val active = bool("active").default(true)
-    val identity = reference("identity", IdentityTable)
+    val identity = reference("identity", IdentityTable).uniqueIndex()
 
     // Details
     val firstName = varchar("first_name", 100)

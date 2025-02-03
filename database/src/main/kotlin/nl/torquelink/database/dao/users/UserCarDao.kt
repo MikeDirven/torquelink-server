@@ -1,8 +1,8 @@
-package nl.torquelink.database.dao
+package nl.torquelink.database.dao.users
 
 import nl.torquelink.database.interfaces.CoreEntity
 import nl.torquelink.database.interfaces.CoreEntityClass
-import nl.torquelink.database.tables.UserCarsTable
+import nl.torquelink.database.tables.users.UserCarsTable
 import org.jetbrains.exposed.dao.id.EntityID
 
 class UserCarDao(id : EntityID<Long>) : CoreEntity(id, UserCarsTable) {

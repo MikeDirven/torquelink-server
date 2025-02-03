@@ -1,37 +1,38 @@
-package nl.torquelink.database.dao
+package nl.torquelink.database.dao.users
 
+import nl.torquelink.database.dao.identity.IdentityDao
 import nl.torquelink.database.interfaces.CoreEntity
 import nl.torquelink.database.interfaces.CoreEntityClass
-import nl.torquelink.database.tables.UserCarsTable
-import nl.torquelink.database.tables.UserProfileTable
+import nl.torquelink.database.tables.users.UserCarsTable
+import nl.torquelink.database.tables.users.UserProfileTable
 import nl.torquelink.shared.models.profile.UserProfiles
 import org.jetbrains.exposed.dao.id.EntityID
 
 class UserProfileDao(id : EntityID<Long>) : CoreEntity(id, UserProfileTable) {
     companion object : CoreEntityClass<UserProfileDao>(UserProfileTable)
 
-    val identity by IdentityDao referencedOn UserProfileTable.identity
+    var identity by IdentityDao referencedOn UserProfileTable.identity
 
     // Profile
-    val firstName by UserProfileTable.firstName
-    val lastName by UserProfileTable.lastName
-    val dateOfBirth by UserProfileTable.dateOfBirth
-    val phoneNumber by UserProfileTable.phoneNumber
-    val country by UserProfileTable.country
-    val city by UserProfileTable.city
-    val avatar by UserProfileTable.avatar
+    var firstName by UserProfileTable.firstName
+    var lastName by UserProfileTable.lastName
+    var dateOfBirth by UserProfileTable.dateOfBirth
+    var phoneNumber by UserProfileTable.phoneNumber
+    var country by UserProfileTable.country
+    var city by UserProfileTable.city
+    var avatar by UserProfileTable.avatar
 
     // References
     val userCars by UserCarDao referrersOn UserCarsTable.user
 
     // Settings
-    val emailIsPublic by UserProfileTable.emailIsPublic
-    val firstNameIsPublic by UserProfileTable.firstNameIsPublic
-    val lastNameIsPublic by UserProfileTable.lastNameIsPublic
-    val dateOfBirthIsPublic by UserProfileTable.dateOfBirthIsPublic
-    val phoneNumberIsPublic by UserProfileTable.phoneNumberIsPublic
-    val countryIsPublic by UserProfileTable.countryIsPublic
-    val cityIsPublic by UserProfileTable.cityIsPublic
+    var emailIsPublic by UserProfileTable.emailIsPublic
+    var firstNameIsPublic by UserProfileTable.firstNameIsPublic
+    var lastNameIsPublic by UserProfileTable.lastNameIsPublic
+    var dateOfBirthIsPublic by UserProfileTable.dateOfBirthIsPublic
+    var phoneNumberIsPublic by UserProfileTable.phoneNumberIsPublic
+    var countryIsPublic by UserProfileTable.countryIsPublic
+    var cityIsPublic by UserProfileTable.cityIsPublic
 
     fun toResponseWithSettings() : UserProfiles.UserProfileWithSettingsDto {
         return UserProfiles.UserProfileWithSettingsDto(

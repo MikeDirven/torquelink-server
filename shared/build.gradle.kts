@@ -40,12 +40,17 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(libs.ktor.common.resources)
+                implementation(libs.bundles.ktor.client)
                 implementation(libs.ktor.serialization.kotlinx.json)
             }
         }
 
         val jvmMain by getting {
             dependencies {
+                implementation(libs.bundles.ktor)
+                implementation(libs.bundles.exposed)
+                implementation(libs.bundles.smiley)
                 implementation(libs.cipher.bouncycastle)
             }
         }

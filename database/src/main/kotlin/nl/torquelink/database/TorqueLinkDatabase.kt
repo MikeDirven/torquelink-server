@@ -1,7 +1,11 @@
 package nl.torquelink.database
 
 import nl.torquelink.database.interfaces.DatabaseHolder
-import nl.torquelink.database.tables.*
+import nl.torquelink.database.tables.identity.AccessTokenStoreTable
+import nl.torquelink.database.tables.identity.IdentityTable
+import nl.torquelink.database.tables.identity.RememberTokenStoreTable
+import nl.torquelink.database.tables.users.UserCarsTable
+import nl.torquelink.database.tables.users.UserProfileTable
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction

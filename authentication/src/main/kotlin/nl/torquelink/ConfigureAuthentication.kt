@@ -6,6 +6,7 @@ import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
 import nl.torquelink.database.TorqueLinkDatabase
 import nl.torquelink.generators.TorqueLinkTokenGenerator
+import nl.torquelink.providers.apiKey
 import nl.torquelink.routing.getRefreshToken
 import nl.torquelink.routing.postLoginRoute
 import nl.torquelink.routing.postRegisterRoute
@@ -13,17 +14,19 @@ import nl.torquelink.services.AuthenticationService
 
 fun Application.configureAuthentication() {
     install(Authentication) {
-        bearer(SECURITY_SCHEME) {
-            authenticate { credential ->
+        apiKey(SECURITY_SCHEME) {
+            headerName = SECURITY_SCHEME
+            validate { credential ->
                 runBlocking {
-                    AuthenticationService().checkTokenValidation(credential.token)
+                    AuthenticationService().checkTokenValidation(credential)
                 }
             }
         }
-        bearer(REFRESH_SECURITY_SCHEME) {
-            authenticate { credential ->
+        apiKey(REFRESH_SECURITY_SCHEME) {
+            headerName = REFRESH_SECURITY_SCHEME
+            validate { credential ->
                 runBlocking {
-                    AuthenticationService().checkTokenValidation(credential.token)
+                    AuthenticationService().checkTokenValidation(credential)
                 }
             }
         }
@@ -41,6 +44,8 @@ fun Application.configureAuthentication() {
         postLoginRoute()
         postRegisterRoute()
 
-        getRefreshToken()
+        authenticate(REFRESH_SECURITY_SCHEME){
+            getRefreshToken()
+        }
     }
 }

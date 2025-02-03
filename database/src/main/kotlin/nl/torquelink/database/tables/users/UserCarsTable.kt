@@ -1,4 +1,4 @@
-package nl.torquelink.database.tables
+package nl.torquelink.database.tables.users
 
 import nl.torquelink.database.interfaces.CoreTable
 

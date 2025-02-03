@@ -1,8 +1,8 @@
-package nl.torquelink.database.dao
+package nl.torquelink.database.dao.identity
 
 import nl.torquelink.database.interfaces.CoreEntity
 import nl.torquelink.database.interfaces.CoreEntityClass
-import nl.torquelink.database.tables.AccessTokenStoreTable
+import nl.torquelink.database.tables.identity.AccessTokenStoreTable
 import org.jetbrains.exposed.dao.id.EntityID
 
 class AccessTokenStoreDao(id : EntityID<Long>) : CoreEntity(id, AccessTokenStoreTable) {

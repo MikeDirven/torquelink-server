@@ -1,19 +1,20 @@
 package nl.torquelink.routing
 
 import io.github.smiley4.ktorswaggerui.dsl.routes.OpenApiRoute
-import io.github.smiley4.ktorswaggerui.dsl.routing.post
+import io.github.smiley4.ktorswaggerui.dsl.routing.resources.post
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import nl.torquelink.constants.AUTHENTICATION_TAG
 import nl.torquelink.database.TorqueLinkDatabase
-import nl.torquelink.database.dao.IdentityDao
-import nl.torquelink.database.dao.UserProfileDao
-import nl.torquelink.database.tables.UserProfileTable
+import nl.torquelink.database.dao.identity.IdentityDao
+import nl.torquelink.database.dao.users.UserProfileDao
+import nl.torquelink.database.tables.users.UserProfileTable
 import nl.torquelink.services.AuthenticationService
 import nl.torquelink.shared.models.auth.AuthenticationResponses
 import nl.torquelink.shared.models.auth.LoginRequests
+import nl.torquelink.shared.routing.subRouting.TorqueLinkAuthRouting
 
 fun postLoginRouteDoc(ref: OpenApiRoute) = ref.apply {
     tags = setOf(AUTHENTICATION_TAG)
@@ -31,8 +32,8 @@ fun postLoginRouteDoc(ref: OpenApiRoute) = ref.apply {
     }
 }
 
-fun Routing.postLoginRoute() {
-    post("auth/login", ::postLoginRouteDoc) {
+fun Route.postLoginRoute() {
+    post<TorqueLinkAuthRouting.Login>(::postLoginRouteDoc) {
         val request = call.receive<LoginRequests>()
         val responseObject : Pair<IdentityDao, AuthenticationResponses> = when(request) {
             is LoginRequests.UsernameLoginRequest -> {

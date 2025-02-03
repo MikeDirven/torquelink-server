@@ -1,4 +1,4 @@
-package nl.torquelink.cipher
+package nl.torquelink.shared.cipher
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import java.security.Security

@@ -2,7 +2,7 @@ package nl.torquelink.routing
 
 import io.github.smiley4.ktorswaggerui.data.anyOf
 import io.github.smiley4.ktorswaggerui.dsl.routes.OpenApiRoute
-import io.github.smiley4.ktorswaggerui.dsl.routing.post
+import io.github.smiley4.ktorswaggerui.dsl.routing.resources.post
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -11,6 +11,7 @@ import nl.torquelink.constants.AUTHENTICATION_TAG
 import nl.torquelink.services.AuthenticationService
 import nl.torquelink.shared.models.auth.AuthenticationResponses
 import nl.torquelink.shared.models.auth.RegistrationRequests
+import nl.torquelink.shared.routing.subRouting.TorqueLinkAuthRouting
 import kotlin.reflect.typeOf
 
 fun postRegisterRouteDoc(ref: OpenApiRoute) = ref.apply {
@@ -33,8 +34,8 @@ fun postRegisterRouteDoc(ref: OpenApiRoute) = ref.apply {
     }
 }
 
-fun Routing.postRegisterRoute() {
-    post("auth/register", ::postRegisterRouteDoc) {
+fun Route.postRegisterRoute() {
+    post<TorqueLinkAuthRouting.Register>(::postRegisterRouteDoc) {
         val request = call.receive<RegistrationRequests>()
         AuthenticationService().registerNewIdentity(request)
 
