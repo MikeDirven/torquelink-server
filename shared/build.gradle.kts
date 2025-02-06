@@ -1,3 +1,6 @@
+@file:OptIn(ExperimentalWasmDsl::class)
+
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -7,7 +10,7 @@ plugins {
 }
 
 group = "nl.torquelink"
-version = "0.0.0.1"
+version = "0.0.0.5"
 
 fun MavenArtifactRepository.githubCredentials() {
     credentials {
@@ -27,6 +30,10 @@ publishing {
 }
 
 kotlin {
+    iosArm64()
+    iosX64()
+    iosSimulatorArm64()
+    wasmJs()
     jvmToolchain(17)
     jvm() {
         compilerOptions {
@@ -41,8 +48,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.ktor.common.resources)
-                implementation(libs.bundles.ktor.client)
-                implementation(libs.ktor.serialization.kotlinx.json)
+//                implementation(libs.bundles.ktor.client)
+                implementation(libs.jetbrains.kotlinx.serialization )
             }
         }
 

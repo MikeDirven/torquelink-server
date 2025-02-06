@@ -8,8 +8,12 @@ logback-version = "1.5.16"
 smiley-swagger = "4.1.6"
 smiley-kenerator = "1.6.4"
 bouncyCastle = "1.80"
+kotlinx-serialization = "1.8.0"
 
 [libraries]
+# Jetbrains
+jetbrains-kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization"}
+
 #Ktor client
 ktor-client-engine = { module = "io.ktor:ktor-client-java", version.ref = "ktor-version" }
 ktor-client-content-serialization = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor-version"}
@@ -26,6 +30,7 @@ ktor-server-sse = { module = "io.ktor:ktor-server-sse", version.ref = "ktor-vers
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json-jvm", version.ref = "ktor-version" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation-jvm", version.ref = "ktor-version" }
 ktor-server-resources = { group = "io.ktor", name = "ktor-server-resources", version.ref = "ktor-version"}
+ktor-server-status-pages = { group = "io.ktor", name = "ktor-server-status-pages", version.ref = "ktor-version" }
 
 # Ktor common
 ktor-common-resources = { group = "io.ktor", name = "ktor-resources", version.ref = "ktor-version"}
@@ -62,7 +67,8 @@ ktor = [
     "ktor-serialization-kotlinx-json",
     "ktor-server-content-negotiation",
     "logback-classic",
-    "ktor-server-resources"
+    "ktor-server-resources",
+    "ktor-server-status-pages"
 ]
 
 ktor-client = [

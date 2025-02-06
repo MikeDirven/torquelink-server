@@ -35,7 +35,7 @@ fun postLoginRouteDoc(ref: OpenApiRoute) = ref.apply {
 fun Route.postLoginRoute() {
     post<TorqueLinkAuthRouting.Login>(::postLoginRouteDoc) {
         val request = call.receive<LoginRequests>()
-        val responseObject : Pair<IdentityDao, AuthenticationResponses> = when(request) {
+        val responseObject: Pair<IdentityDao, AuthenticationResponses> = when (request) {
             is LoginRequests.UsernameLoginRequest -> {
                 AuthenticationService().loginByUsername(
                     request.username,
@@ -43,6 +43,7 @@ fun Route.postLoginRoute() {
                     request.remember == true
                 )
             }
+
             is LoginRequests.EmailLoginRequest -> {
                 AuthenticationService().loginByEmail(
                     request.email,
@@ -50,6 +51,7 @@ fun Route.postLoginRoute() {
                     request.remember == true
                 )
             }
+
             is LoginRequests.RememberTokenLoginRequest -> {
                 AuthenticationService().loginByRememberToken(
                     request.rememberToken
@@ -58,32 +60,35 @@ fun Route.postLoginRoute() {
         }
 
         // Try to find user profile
-        val userProfile = TorqueLinkDatabase.executeAsync {
-            UserProfileDao.find {
-                UserProfileTable.identity eq  responseObject.first.id
+        TorqueLinkDatabase.executeAsync {
+            val userProfile = UserProfileDao.find {
+                UserProfileTable.identity eq responseObject.first.id
             }.singleOrNull()
-        }
 
-        userProfile?.let { userProfileDao ->
-            when(responseObject.second) {
-                is AuthenticationResponses.AuthenticationResponseWithRemember -> {
-                    call.respond(
-                        AuthenticationResponses.AuthenticationResponseWithRememberAndProfile(
-                            responseObject.second.accessToken,
-                            responseObject.second.refreshToken,
-                            (responseObject.second as AuthenticationResponses.AuthenticationResponseWithRemember).rememberToken,
-                            userProfileDao.toResponseWithSettings()
+            userProfile?.let { userProfileDao ->
+                when (responseObject.second) {
+                    is AuthenticationResponses.AuthenticationResponseWithRemember -> {
+                        call.respond(
+                            AuthenticationResponses.AuthenticationResponseWithRememberAndProfile(
+                                responseObject.second.accessToken,
+                                responseObject.second.refreshToken,
+                                (responseObject.second as AuthenticationResponses.AuthenticationResponseWithRemember).rememberToken,
+                                userProfileDao.toResponseWithSettings()
+                            )
                         )
-                    )
+                    }
+
+                    else -> {
+                        call.respond(
+                            AuthenticationResponses.AuthenticationResponseWithProfile(
+                                responseObject.second.accessToken,
+                                responseObject.second.refreshToken,
+                                userProfileDao.toResponseWithSettings()
+                            )
+                        )
+                    }
                 }
-                else -> {
-                    AuthenticationResponses.AuthenticationResponseWithProfile(
-                        responseObject.second.accessToken,
-                        responseObject.second.refreshToken,
-                        userProfileDao.toResponseWithSettings()
-                    )
-                }
-            }
-        } ?: call.respond(HttpStatusCode.OK, responseObject.second)
+            } ?: call.respond(HttpStatusCode.OK, responseObject.second)
+        }
     }
 }

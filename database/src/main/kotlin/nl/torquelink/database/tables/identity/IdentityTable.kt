@@ -12,11 +12,7 @@ object IdentityTable : IdentityTable("TL_AUTH_Identities"){
     override val active: Column<Boolean> = bool("active").default(true)
 
     val username = varchar("username", 100)
-    val email = encryptedVarchar(
-        "email",
-        255,
-        Algorithms.AES_256_PBE_CBC(CipherConfig.SECRET_KEY, CipherConfig.SALT)
-    ).uniqueIndex()
+    val email = varchar("email", 100).uniqueIndex()
     val passwordHash = encryptedVarchar(
         "password_hash",
         255,

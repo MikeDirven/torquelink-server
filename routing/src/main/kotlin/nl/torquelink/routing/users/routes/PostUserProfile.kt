@@ -18,6 +18,7 @@ import nl.torquelink.shared.models.auth.AuthenticationResponses
 import nl.torquelink.shared.models.profile.UserProfiles
 import nl.torquelink.shared.routing.subRouting.TorqueLinkUserRoutingV1
 import org.jetbrains.exposed.sql.and
+import java.time.LocalDate
 
 fun postUserProfilesRouteDoc(ref: OpenApiRoute) = ref.apply {
     tags = setOf(UsersRoutingConstants.TAG)
@@ -37,30 +38,30 @@ fun postUserProfilesRouteDoc(ref: OpenApiRoute) = ref.apply {
 }
 
 fun Route.postUserProfileRoute() {
-    post<TorqueLinkUserRoutingV1.Users>(::postUserProfilesRouteDoc) {
-        TorqueLinkDatabase.executeAsync {
+    post<TorqueLinkUserRoutingV1.Profiles>(::postUserProfilesRouteDoc) {
+        val request = call.receive<UserProfiles.UserProfileNewDto>()
+        val response =  TorqueLinkDatabase.execute {
             val authentication = call.principal<AuthenticationResponses>()
                 ?: throw AuthExceptions.NoValidTokenFound
 
             // get currentIdentity
             val currentIdentity = AccessTokenStoreDao.find {
                 AccessTokenStoreTable.accessToken eq authentication.accessToken and (
-                        AccessTokenStoreTable.active eq true
-                        )
+                    AccessTokenStoreTable.active eq true
+                )
             }.singleOrNull()?.identity ?: throw AuthExceptions.NoValidTokenFound
 
-            val request = call.receive<UserProfiles.UserProfileNewDto>()
-            val newUserProfile = UserProfileDao.new {
+            UserProfileDao.new {
                 identity = currentIdentity
                 firstName = request.firstName
                 lastName = request.lastName
-                dateOfBirth = request.dateOfBirth
+                dateOfBirth = LocalDate.parse(request.dateOfBirth)
                 phoneNumber = request.phoneNumber
                 country = request.country
                 city = request.city
-            }
-
-            call.respond(HttpStatusCode.OK, newUserProfile.toResponseWithoutSettings())
+            }.toResponseWithoutSettings()
         }
+
+        call.respond(HttpStatusCode.OK, response)
     }
 }

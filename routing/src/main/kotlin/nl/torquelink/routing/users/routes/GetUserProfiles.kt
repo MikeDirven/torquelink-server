@@ -36,7 +36,7 @@ fun getUserProfilesRouteDoc(ref: OpenApiRoute) = ref.apply {
 }
 
 fun Route.getUserProfilesRoute() {
-    get<TorqueLinkUserRoutingV1.Users>(::getUserProfilesRouteDoc) {
+    get<TorqueLinkUserRoutingV1.Profiles>(::getUserProfilesRouteDoc) {
         TorqueLinkDatabase.executeAsync {
             val filters = filters()
             val loadedUserProfiles: Pageable<UserProfiles.UserProfileDto> = UserProfileDao.paginated(

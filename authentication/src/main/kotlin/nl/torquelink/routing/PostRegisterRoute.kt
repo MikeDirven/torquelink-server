@@ -1,6 +1,5 @@
 package nl.torquelink.routing
 
-import io.github.smiley4.ktorswaggerui.data.anyOf
 import io.github.smiley4.ktorswaggerui.dsl.routes.OpenApiRoute
 import io.github.smiley4.ktorswaggerui.dsl.routing.resources.post
 import io.ktor.http.*
@@ -12,17 +11,12 @@ import nl.torquelink.services.AuthenticationService
 import nl.torquelink.shared.models.auth.AuthenticationResponses
 import nl.torquelink.shared.models.auth.RegistrationRequests
 import nl.torquelink.shared.routing.subRouting.TorqueLinkAuthRouting
-import kotlin.reflect.typeOf
 
 fun postRegisterRouteDoc(ref: OpenApiRoute) = ref.apply {
     tags = setOf(AUTHENTICATION_TAG)
     description = "Register to Torque Link."
     request {
-        body(
-            anyOf(
-                typeOf<RegistrationRequests.RegisterWithTorqueLinkDto>()
-            )
-        )
+        body<RegistrationRequests>()
     }
     response {
         HttpStatusCode.OK to {

@@ -3,9 +3,12 @@ package nl.torquelink
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.resources.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import nl.torquelink.config.*
 import nl.torquelink.nl.torquelink.routing.users.configureUsersRouting
+import java.io.File
 
 fun main(args: Array<String>) {
     EngineMain.main(args)
@@ -18,12 +21,23 @@ fun Application.module() {
     configureSerialization()
     configureDatabases()
     configureMonitoring()
+    configureExceptions()
     configureHTTP()
     configureAuthentication()
     configureSwagger()
 
     // Configure routing
     configureUsersRouting()
+
+    routing {
+        get("/.well-known/assetlinks.json"){
+            call.respondFile(File("C:\\Users\\Mike\\Desktop\\Torque Link\\server\\torquelink\\assetlinks.json"))
+        }
+
+        get("test"){
+            call.respondFile(File("C:\\Users\\Mike\\Desktop\\Torque Link\\server\\torquelink\\test.html"))
+        }
+    }
 
 //    routing {
 //        get("/api/{registrationNumber}") {

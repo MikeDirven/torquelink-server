@@ -252,7 +252,8 @@ enum class CountryCode(
     EH("212", "EH", "ESH", "Western Sahara"),
     YE("967", "YE", "YEM", "Yemen"),
     ZM("260", "ZM", "ZMB", "Zambia"),
-    ZW("263", "ZW", "ZWE", "Zimbabwe");
+    ZW("263", "ZW", "ZWE", "Zimbabwe"),
+    PRIVATE("****", "****", "****", "****");
 
     companion object {
         fun findCountryCode(representation: String) : CountryCode? {

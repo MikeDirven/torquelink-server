@@ -5,8 +5,11 @@ import nl.torquelink.database.interfaces.CoreEntity
 import nl.torquelink.database.interfaces.CoreEntityClass
 import nl.torquelink.database.tables.users.UserCarsTable
 import nl.torquelink.database.tables.users.UserProfileTable
+import nl.torquelink.shared.enums.CountryCode
 import nl.torquelink.shared.models.profile.UserProfiles
 import org.jetbrains.exposed.dao.id.EntityID
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class UserProfileDao(id : EntityID<Long>) : CoreEntity(id, UserProfileTable) {
     companion object : CoreEntityClass<UserProfileDao>(UserProfileTable)
@@ -36,13 +39,17 @@ class UserProfileDao(id : EntityID<Long>) : CoreEntity(id, UserProfileTable) {
 
     fun toResponseWithSettings() : UserProfiles.UserProfileWithSettingsDto {
         return UserProfiles.UserProfileWithSettingsDto(
-            firstName,
-            lastName,
-            dateOfBirth,
-            phoneNumber,
-            country,
-            city,
+            id.value,
+            if(emailIsPublic) identity.email else "****",
+            if(firstNameIsPublic) firstName else "****",
+            if(lastNameIsPublic) lastName else "****",
+            if(dateOfBirthIsPublic) dateOfBirth.format(DateTimeFormatter.ISO_LOCAL_DATE) else LocalDate.MIN.format(DateTimeFormatter.ISO_LOCAL_DATE),
+            if(phoneNumberIsPublic) phoneNumber else "****",
+            if(countryIsPublic) country else CountryCode.PRIVATE,
+            if(cityIsPublic) city else "****",
             avatar ?: "",
+            userCars.map(UserCarDao::toResponseWithoutEngineDetails),
+
             emailIsPublic,
             firstNameIsPublic,
             lastNameIsPublic,
@@ -55,13 +62,16 @@ class UserProfileDao(id : EntityID<Long>) : CoreEntity(id, UserProfileTable) {
 
     fun toResponseWithoutSettings() : UserProfiles.UserProfileDto {
         return UserProfiles.UserProfileDto(
-            firstName,
-            lastName,
-            dateOfBirth,
-            phoneNumber,
-            country,
-            city,
-            avatar ?: ""
+            id.value,
+            if(emailIsPublic) identity.email else "****",
+            if(firstNameIsPublic) firstName else "****",
+            if(lastNameIsPublic) lastName else "****",
+            if(dateOfBirthIsPublic) dateOfBirth.format(DateTimeFormatter.ISO_LOCAL_DATE) else LocalDate.MIN.format(DateTimeFormatter.ISO_LOCAL_DATE),
+            if(phoneNumberIsPublic) phoneNumber else "****",
+            if(countryIsPublic) country else CountryCode.PRIVATE,
+            if(cityIsPublic) city else "****",
+            avatar ?: "",
+            userCars.map(UserCarDao::toResponseWithoutEngineDetails)
         )
     }
 }

@@ -2,14 +2,12 @@ package nl.torquelink.shared.models.profile
 
 import kotlinx.serialization.Serializable
 import nl.torquelink.shared.enums.CountryCode
-import nl.torquelink.shared.serializers.LocalDateSerializer
-import java.time.LocalDate
 
 @Serializable
 sealed interface UserProfiles {
-    val firstName: String
-    val lastName: String
-    @Serializable(with = LocalDateSerializer::class) val dateOfBirth: LocalDate?
+    val firstName: String?
+    val lastName: String?
+    val dateOfBirth: String?
     val phoneNumber: String?
     val country: CountryCode?
     val city: String?
@@ -18,37 +16,61 @@ sealed interface UserProfiles {
     data class UserProfileNewDto(
         override val firstName: String,
         override val lastName: String,
-        @Serializable(with = LocalDateSerializer::class) override val dateOfBirth: LocalDate,
+        override val dateOfBirth: String,
         override val phoneNumber: String,
         override val country: CountryCode,
         override val city: String,
     ) : UserProfiles
 
     @Serializable
-    data class UserProfileDto(
-        override val firstName: String,
-        override val lastName: String,
-        @Serializable(with = LocalDateSerializer::class) override val dateOfBirth: LocalDate?,
-        override val phoneNumber: String?,
-        override val country: CountryCode?,
-        override val city: String?,
-        val avatar: String
+    data class UserProfileUpdateDto(
+        override val firstName: String? = null,
+        override val lastName: String? = null,
+        override val dateOfBirth: String? = null,
+        override val phoneNumber: String? = null,
+        override val country: CountryCode? = null,
+        override val city: String? = null,
+
+        val emailIsPublic: Boolean? = null,
+        val firstNameIsPublic: Boolean? = null,
+        val lastNameIsPublic: Boolean? = null,
+        val dateOfBirthIsPublic: Boolean? = null,
+        val phoneNumberIsPublic: Boolean? = null,
+        val countryIsPublic: Boolean? = null,
+        val cityIsPublic: Boolean? = null
     ) : UserProfiles
 
     @Serializable
-    data class UserProfileWithSettingsDto(
+    data class UserProfileDto(
+        val id: Long,
+        val email: String,
         override val firstName: String,
         override val lastName: String,
-        @Serializable(with = LocalDateSerializer::class) override val dateOfBirth: LocalDate?,
+        override val dateOfBirth: String?,
         override val phoneNumber: String?,
         override val country: CountryCode?,
         override val city: String?,
         val avatar: String,
+        val userCars: List<UserCars.UserCarWithoutEngineDetailsDto>
+    ) : UserProfiles
+
+    @Serializable
+    data class UserProfileWithSettingsDto(
+        val id: Long,
+        val email: String,
+        override val firstName: String,
+        override val lastName: String,
+        override val dateOfBirth: String?,
+        override val phoneNumber: String?,
+        override val country: CountryCode?,
+        override val city: String?,
+        val avatar: String,
+        val userCars: List<UserCars.UserCarWithoutEngineDetailsDto>,
 
         val emailIsPublic: Boolean,
         val firstNameIsPublic: Boolean,
         val lastNameIsPublic: Boolean,
-        val datOfBirthIsPublic: Boolean,
+        val dateOfBirthIsPublic: Boolean,
         val phoneNumberIsPublic: Boolean,
         val countryIsPublic: Boolean,
         val cityIsPublic: Boolean
