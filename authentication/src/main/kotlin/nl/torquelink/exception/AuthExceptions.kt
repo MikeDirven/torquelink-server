@@ -36,4 +36,20 @@ sealed class AuthExceptions(override val message: String? = null) : Exception() 
     class AuthLockedOut(val lockedUntil: LocalDateTime) : AuthExceptions(
         "The account is locked out until $lockedUntil."
     )
+
+    object EmailNotVerified : AuthExceptions(
+        "The email address is not yet verified, please verify you email before logging in!"
+    )
+
+    object UnableToCreateEmailVerification : AuthExceptions(
+        "An error occurred while trying to create an email verification link."
+    )
+
+    object EmailVerificationTokenNotFound: AuthExceptions(
+        "The provided email verification token was not found."
+    )
+
+    object EmailVerificationTokenExpired: AuthExceptions(
+        "The provided email verification token has expired."
+    )
 }

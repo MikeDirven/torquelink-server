@@ -37,6 +37,9 @@ fun Application.module() {
         get("test"){
             call.respondFile(File("C:\\Users\\Mike\\Desktop\\Torque Link\\server\\torquelink\\test.html"))
         }
+        get("assets/text_logo") {
+            call.respondFile(File("C:\\Users\\Mike\\Desktop\\Torque Link\\text_logo.png"))
+        }
     }
 
 //    routing {

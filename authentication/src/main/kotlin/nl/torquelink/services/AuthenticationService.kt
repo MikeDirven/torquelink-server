@@ -2,17 +2,23 @@ package nl.torquelink.services
 
 import io.ktor.server.application.*
 import nl.torquelink.database.dao.identity.AccessTokenStoreDao
+import nl.torquelink.database.dao.identity.EmailVerificationTokenStoreDao
 import nl.torquelink.database.dao.identity.IdentityDao
 import nl.torquelink.database.dao.identity.RememberTokenStoreDao
 import nl.torquelink.database.interfaces.DatabaseHolder
 import nl.torquelink.database.tables.identity.AccessTokenStoreTable
+import nl.torquelink.database.tables.identity.EmailVerificationTokenStoreTable
 import nl.torquelink.database.tables.identity.IdentityTable
 import nl.torquelink.database.tables.identity.RememberTokenStoreTable
 import nl.torquelink.exception.AuthExceptions
 import nl.torquelink.interfaces.TokenGenerator
 import nl.torquelink.shared.models.auth.AuthenticationResponses
 import nl.torquelink.shared.models.auth.RegistrationRequests
+import org.apache.commons.mail.DefaultAuthenticator
+import org.apache.commons.mail.HtmlEmail
 import org.jetbrains.exposed.sql.or
+import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
 import java.sql.SQLException
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -26,6 +32,55 @@ class AuthenticationService internal constructor (
     init {
         instance.set(this)
     }
+    private fun getVerificationEmailBody(username: String, verificationToken: String) : String {
+
+        val stream = AuthenticationService::class.java.getResourceAsStream("/verification.html")
+
+        return stream?.let {
+            InputStreamReader(it, StandardCharsets.UTF_8).use { reader ->
+                reader.readText()
+            }.replace(
+                "%username%",
+                username
+            ).replace(
+                "%verificationUrl%",
+                "http://torquelink.nl/email/verify?verification=$verificationToken"
+            )
+        } ?: throw AuthExceptions.UnableToCreateEmailVerification
+    }
+
+    private suspend fun IdentityDao.sendVerificationEmail() {
+        try {
+            val email = HtmlEmail().apply {
+                setHostName("smtp.strato.com") // Voorbeeld: Gmail SMTP server
+                setSmtpPort(587) // Voorbeeld: Gmail SMTP poort
+                setAuthenticator(
+                    DefaultAuthenticator(
+                        "info@torquelink.nl",
+                        "Nevr!d1579288"
+                    )
+                )
+                isStartTLSEnabled = true
+                setFrom("info@torquelink.nl")
+                addTo(this@sendVerificationEmail.email)
+                setSubject("Torque Link verification")
+                setHtmlMsg(
+                    getVerificationEmailBody(
+                        this@sendVerificationEmail.username,
+                        this@sendVerificationEmail.generatorVerificationToken().verificationToken
+                    )
+                )
+            }
+
+            email.send()
+            println("Email sent successfully!")
+
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            throw AuthExceptions.UnableToCreateEmailVerification
+        }
+    }
+
     private suspend fun RegistrationRequests.RegisterWithTorqueLinkDto.registerNewIdentityFromTorqueLink() : IdentityDao{
         return try {
             IdentityDao.new {
@@ -33,6 +88,8 @@ class AuthenticationService internal constructor (
                 email = this@registerNewIdentityFromTorqueLink.email
                 passwordHash = this@registerNewIdentityFromTorqueLink.password
                 rememberTokens = emptyList()
+            }.apply {
+                sendVerificationEmail()
             }
         } catch (exception: SQLException) {
             exception.printStackTrace()
@@ -61,6 +118,12 @@ class AuthenticationService internal constructor (
             if (passwordHash != password)
                 throw AuthExceptions.InvalidCredentials
 
+            // Email verification check
+            if(!isEmailConfirmed)
+                throw AuthExceptions.EmailNotVerified
+
+            // Last login update
+
             // Lock out check
             lockoutEndDate?.let {
                 when {
@@ -82,6 +145,13 @@ class AuthenticationService internal constructor (
             // Update failed login attempts and lock out if necessary
             setLockedOut()
             throw exception
+        }
+    }
+
+    private suspend fun IdentityDao.generatorVerificationToken() : EmailVerificationTokenStoreDao {
+        return EmailVerificationTokenStoreDao.new {
+            identity = this@generatorVerificationToken
+            verificationToken = tokenGenerator.generateVerificationToken(this@generatorVerificationToken.username)
         }
     }
 
@@ -139,6 +209,16 @@ class AuthenticationService internal constructor (
                 refreshToken = refreshToken
             )
         }
+    }
+
+    private fun EmailVerificationTokenStoreDao.handleVerification() {
+        if(verificationTokenExpireDateTime < LocalDateTime.now())
+            throw AuthExceptions.EmailVerificationTokenExpired
+
+        delete()
+
+        // Update identity variable
+        identity.isEmailConfirmed = true
     }
 
     suspend fun loginByUsername(username: String, password: String, remember: Boolean = false) : Pair<IdentityDao, AuthenticationResponses> {
@@ -205,6 +285,16 @@ class AuthenticationService internal constructor (
             when (registration) {
                 is RegistrationRequests.RegisterWithTorqueLinkDto -> registration.registerNewIdentityFromTorqueLink()
             }
+        }
+    }
+
+    suspend fun verifyEmail(verificationToken: String) {
+        database.executeAsync {
+            val verification = EmailVerificationTokenStoreDao.find {
+                EmailVerificationTokenStoreTable.verificationToken eq verificationToken
+            }.singleOrNull()?: throw AuthExceptions.EmailVerificationTokenNotFound
+
+            verification.handleVerification()
         }
     }
 

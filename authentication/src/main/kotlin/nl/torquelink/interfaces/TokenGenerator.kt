@@ -6,4 +6,6 @@ abstract class TokenGenerator {
     abstract fun generateRefreshToken(username: String) : String
 
     abstract fun generateRememberToken(username: String) : String
+
+    abstract fun generateVerificationToken(username: String) : String
 }

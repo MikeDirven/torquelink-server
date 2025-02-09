@@ -9,6 +9,7 @@ smiley-swagger = "4.1.6"
 smiley-kenerator = "1.6.4"
 bouncyCastle = "1.80"
 kotlinx-serialization = "1.8.0"
+apache-commons = "1.6.0"
 
 [libraries]
 # Jetbrains
@@ -40,6 +41,9 @@ smiley-swagger = { module = "io.github.smiley4:ktor-swagger-ui", version.ref = "
 smiley-swagger-kenerator-core = { module = "io.github.smiley4:schema-kenerator-core", version.ref = "smiley-kenerator"}
 smiley-swagger-kenerator-serialization = { module = "io.github.smiley4:schema-kenerator-serialization", version.ref = "smiley-kenerator"}
 smiley-swagger-kenerator-swagger = { module = "io.github.smiley4:schema-kenerator-swagger", version.ref = "smiley-kenerator"}
+
+# Apache
+apache-commons-email = { group = "org.apache.commons", name = "commons-email", version.ref = "apache-commons"}
 
 #General
 cipher-bouncycastle = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncyCastle"}

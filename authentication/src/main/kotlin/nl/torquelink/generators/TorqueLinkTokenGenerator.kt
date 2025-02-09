@@ -20,4 +20,8 @@ object TorqueLinkTokenGenerator : TokenGenerator() {
     override fun generateRememberToken(username: String): String {
         return generateAccessToken(username)
     }
+
+    override fun generateVerificationToken(username: String): String {
+        return generateAccessToken(username)
+    }
 }

@@ -2,6 +2,7 @@ package nl.torquelink.database
 
 import nl.torquelink.database.interfaces.DatabaseHolder
 import nl.torquelink.database.tables.identity.AccessTokenStoreTable
+import nl.torquelink.database.tables.identity.EmailVerificationTokenStoreTable
 import nl.torquelink.database.tables.identity.IdentityTable
 import nl.torquelink.database.tables.identity.RememberTokenStoreTable
 import nl.torquelink.database.tables.users.UserCarsTable
@@ -28,6 +29,7 @@ object TorqueLinkDatabase : DatabaseHolder(){
                 IdentityTable,
                 AccessTokenStoreTable,
                 RememberTokenStoreTable,
+                EmailVerificationTokenStoreTable,
                 UserProfileTable,
                 UserCarsTable
             )

@@ -7,7 +7,8 @@ import kotlinx.coroutines.runBlocking
 import nl.torquelink.database.TorqueLinkDatabase
 import nl.torquelink.generators.TorqueLinkTokenGenerator
 import nl.torquelink.providers.apiKey
-import nl.torquelink.routing.getRefreshToken
+import nl.torquelink.routing.getRefreshTokenRoute
+import nl.torquelink.routing.getVerifyEmailRoute
 import nl.torquelink.routing.postLoginRoute
 import nl.torquelink.routing.postRegisterRoute
 import nl.torquelink.services.AuthenticationService
@@ -43,9 +44,10 @@ fun Application.configureAuthentication() {
     routing {
         postLoginRoute()
         postRegisterRoute()
+        getVerifyEmailRoute()
 
         authenticate(REFRESH_SECURITY_SCHEME){
-            getRefreshToken()
+            getRefreshTokenRoute()
         }
     }
 }

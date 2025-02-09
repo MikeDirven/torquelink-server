@@ -11,4 +11,13 @@ interface TorqueLinkAuthRouting {
 
     @Resource("refresh")
     class Refresh
+
+    @Resource("email")
+    class Email {
+        @Resource("verify")
+        class Verify(
+            val parent: Email = Email(),
+            val verification: String
+        )
+    }
 }

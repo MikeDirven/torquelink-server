@@ -26,7 +26,7 @@ fun getRefreshTokenRouteDoc(ref: OpenApiRoute) = ref.apply {
     }
 }
 
-fun Route.getRefreshToken() {
+fun Route.getRefreshTokenRoute() {
     get<TorqueLinkAuthRouting.Refresh>(::getRefreshTokenRouteDoc) {
         val security = call.principal<AuthenticationResponses>()
             ?: throw AuthExceptions.NoValidTokenFound
