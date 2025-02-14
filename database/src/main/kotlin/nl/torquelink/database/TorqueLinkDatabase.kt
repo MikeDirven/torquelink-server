@@ -1,10 +1,7 @@
 package nl.torquelink.database
 
 import nl.torquelink.database.interfaces.DatabaseHolder
-import nl.torquelink.database.tables.identity.AccessTokenStoreTable
-import nl.torquelink.database.tables.identity.EmailVerificationTokenStoreTable
-import nl.torquelink.database.tables.identity.IdentityTable
-import nl.torquelink.database.tables.identity.RememberTokenStoreTable
+import nl.torquelink.database.tables.identity.*
 import nl.torquelink.database.tables.users.UserCarsTable
 import nl.torquelink.database.tables.users.UserProfileTable
 import org.jetbrains.exposed.sql.Database
@@ -30,6 +27,8 @@ object TorqueLinkDatabase : DatabaseHolder(){
                 AccessTokenStoreTable,
                 RememberTokenStoreTable,
                 EmailVerificationTokenStoreTable,
+                ResetPasswordTokenStoreTable,
+
                 UserProfileTable,
                 UserCarsTable
             )

@@ -12,6 +12,14 @@ interface TorqueLinkAuthRouting {
     @Resource("refresh")
     class Refresh
 
+    @Resource("password")
+    class Password {
+        @Resource("Reset")
+        class Reset(
+            val parent: Password = Password()
+        )
+    }
+
     @Resource("email")
     class Email {
         @Resource("verify")

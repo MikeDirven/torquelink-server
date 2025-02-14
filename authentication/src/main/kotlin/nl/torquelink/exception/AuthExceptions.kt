@@ -23,11 +23,15 @@ sealed class AuthExceptions(override val message: String? = null) : Exception() 
         "The provided remember token is invalid."
     )
 
-    class UserNotFoundWithUsername(val username: String) : AuthExceptions(
+    class UserNotFound(username: String) : AuthExceptions(
+        "No user found for the provided credentials."
+    )
+
+    class UserNotFoundWithUsername(username: String) : AuthExceptions(
         "No user found with the username '$username'."
     )
 
-    class UserNotFoundWithEmail(val email: String) : AuthExceptions(
+    class UserNotFoundWithEmail(email: String) : AuthExceptions(
         "No user found with the email '$email'."
     )
 
@@ -51,5 +55,9 @@ sealed class AuthExceptions(override val message: String? = null) : Exception() 
 
     object EmailVerificationTokenExpired: AuthExceptions(
         "The provided email verification token has expired."
+    )
+
+    object ResetPasswordTokenInvalid : AuthExceptions(
+        "The provided reset password token is invalid or expired."
     )
 }

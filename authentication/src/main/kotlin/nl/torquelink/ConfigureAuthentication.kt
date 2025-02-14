@@ -7,10 +7,7 @@ import kotlinx.coroutines.runBlocking
 import nl.torquelink.database.TorqueLinkDatabase
 import nl.torquelink.generators.TorqueLinkTokenGenerator
 import nl.torquelink.providers.apiKey
-import nl.torquelink.routing.getRefreshTokenRoute
-import nl.torquelink.routing.getVerifyEmailRoute
-import nl.torquelink.routing.postLoginRoute
-import nl.torquelink.routing.postRegisterRoute
+import nl.torquelink.routing.*
 import nl.torquelink.services.AuthenticationService
 
 fun Application.configureAuthentication() {
@@ -31,6 +28,14 @@ fun Application.configureAuthentication() {
                 }
             }
         }
+        apiKey(PASSWORD_RESET_SCHEME) {
+            headerName = PASSWORD_RESET_SCHEME
+            validate { credential ->
+                runBlocking {
+                    AuthenticationService().checkTokenValidation(credential)
+                }
+            }
+        }
     }
 
     // Initialize services
@@ -45,6 +50,7 @@ fun Application.configureAuthentication() {
         postLoginRoute()
         postRegisterRoute()
         getVerifyEmailRoute()
+        postResetPasswordRoute()
 
         authenticate(REFRESH_SECURITY_SCHEME){
             getRefreshTokenRoute()

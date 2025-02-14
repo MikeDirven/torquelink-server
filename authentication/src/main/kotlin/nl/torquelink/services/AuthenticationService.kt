@@ -1,15 +1,9 @@
 package nl.torquelink.services
 
 import io.ktor.server.application.*
-import nl.torquelink.database.dao.identity.AccessTokenStoreDao
-import nl.torquelink.database.dao.identity.EmailVerificationTokenStoreDao
-import nl.torquelink.database.dao.identity.IdentityDao
-import nl.torquelink.database.dao.identity.RememberTokenStoreDao
+import nl.torquelink.database.dao.identity.*
 import nl.torquelink.database.interfaces.DatabaseHolder
-import nl.torquelink.database.tables.identity.AccessTokenStoreTable
-import nl.torquelink.database.tables.identity.EmailVerificationTokenStoreTable
-import nl.torquelink.database.tables.identity.IdentityTable
-import nl.torquelink.database.tables.identity.RememberTokenStoreTable
+import nl.torquelink.database.tables.identity.*
 import nl.torquelink.exception.AuthExceptions
 import nl.torquelink.interfaces.TokenGenerator
 import nl.torquelink.shared.models.auth.AuthenticationResponses
@@ -33,7 +27,6 @@ class AuthenticationService internal constructor (
         instance.set(this)
     }
     private fun getVerificationEmailBody(username: String, verificationToken: String) : String {
-
         val stream = AuthenticationService::class.java.getResourceAsStream("/verification.html")
 
         return stream?.let {
@@ -45,6 +38,22 @@ class AuthenticationService internal constructor (
             ).replace(
                 "%verificationUrl%",
                 "http://torquelink.nl/email/verify?verification=$verificationToken"
+            )
+        } ?: throw AuthExceptions.UnableToCreateEmailVerification
+    }
+
+    private fun getPasswordResetEmailBody(username: String, resetToken: String) : String {
+        val stream = AuthenticationService::class.java.getResourceAsStream("/pass_reset.html")
+
+        return stream?.let {
+            InputStreamReader(it, StandardCharsets.UTF_8).use { reader ->
+                reader.readText()
+            }.replace(
+                "%username%",
+                username
+            ).replace(
+                "%resetUrl%",
+                "http://torquelink.nl/password/reset?token=$resetToken"
             )
         } ?: throw AuthExceptions.UnableToCreateEmailVerification
     }
@@ -68,6 +77,38 @@ class AuthenticationService internal constructor (
                     getVerificationEmailBody(
                         this@sendVerificationEmail.username,
                         this@sendVerificationEmail.generatorVerificationToken().verificationToken
+                    )
+                )
+            }
+
+            email.send()
+            println("Email sent successfully!")
+
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            throw AuthExceptions.UnableToCreateEmailVerification
+        }
+    }
+
+    private suspend fun IdentityDao.sendPasswordResetEmail() {
+        try {
+            val email = HtmlEmail().apply {
+                setHostName("smtp.strato.com") // Voorbeeld: Gmail SMTP server
+                setSmtpPort(587) // Voorbeeld: Gmail SMTP poort
+                setAuthenticator(
+                    DefaultAuthenticator(
+                        "info@torquelink.nl",
+                        "Nevr!d1579288"
+                    )
+                )
+                isStartTLSEnabled = true
+                setFrom("info@torquelink.nl")
+                addTo(this@sendPasswordResetEmail.email)
+                setSubject("Torque Link password reset")
+                setHtmlMsg(
+                    getPasswordResetEmailBody(
+                        this@sendPasswordResetEmail.username,
+                        this@sendPasswordResetEmail.generatorResetPasswordToken().resetToken
                     )
                 )
             }
@@ -148,10 +189,17 @@ class AuthenticationService internal constructor (
         }
     }
 
-    private suspend fun IdentityDao.generatorVerificationToken() : EmailVerificationTokenStoreDao {
+    private fun IdentityDao.generatorVerificationToken() : EmailVerificationTokenStoreDao {
         return EmailVerificationTokenStoreDao.new {
             identity = this@generatorVerificationToken
             verificationToken = tokenGenerator.generateVerificationToken(this@generatorVerificationToken.username)
+        }
+    }
+
+    private fun IdentityDao.generatorResetPasswordToken() : ResetPasswordTokenStoreDao {
+        return ResetPasswordTokenStoreDao.new {
+            identity = this@generatorResetPasswordToken
+            resetToken = tokenGenerator.generateVerificationToken(this@generatorResetPasswordToken.username)
         }
     }
 
@@ -295,6 +343,28 @@ class AuthenticationService internal constructor (
             }.singleOrNull()?: throw AuthExceptions.EmailVerificationTokenNotFound
 
             verification.handleVerification()
+        }
+    }
+
+    suspend fun createPasswordResetRequest(username: String, email: String) {
+        database.executeAsync {
+            val identity = IdentityDao.find {
+                (IdentityTable.username eq username) or (IdentityTable.email eq email)
+            }.singleOrNull()?: throw AuthExceptions.UserNotFound(username)
+
+            identity.sendPasswordResetEmail()
+        }
+    }
+
+    suspend fun resetPassword(token: String, newPassword: String) {
+        database.executeAsync {
+            val resetToken = ResetPasswordTokenStoreDao.find {
+                ResetPasswordTokenStoreTable.resetToken eq token
+            }.singleOrNull()?: throw AuthExceptions.ResetPasswordTokenInvalid
+
+            resetToken.identity.apply {
+                passwordHash = newPassword
+            }
         }
     }
 
