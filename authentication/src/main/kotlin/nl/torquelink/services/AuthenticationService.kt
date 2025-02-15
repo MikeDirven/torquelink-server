@@ -53,7 +53,7 @@ class AuthenticationService internal constructor (
                 username
             ).replace(
                 "%resetUrl%",
-                "http://torquelink.nl/password/reset?token=$resetToken"
+                "http://torquelink.nl/password/reset?resetToken=$resetToken"
             )
         } ?: throw AuthExceptions.UnableToCreateEmailVerification
     }
@@ -360,7 +360,8 @@ class AuthenticationService internal constructor (
         database.executeAsync {
             val resetToken = ResetPasswordTokenStoreDao.find {
                 ResetPasswordTokenStoreTable.resetToken eq token
-            }.singleOrNull()?: throw AuthExceptions.ResetPasswordTokenInvalid
+            }.singleOrNull()
+                ?: throw AuthExceptions.ResetPasswordTokenInvalid
 
             resetToken.identity.apply {
                 passwordHash = newPassword
