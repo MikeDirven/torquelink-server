@@ -18,6 +18,7 @@ object IdentityTable : IdentityTable("TL_AUTH_Identities"){
         255,
         Algorithms.AES_256_PBE_CBC(CipherConfig.SECRET_KEY, CipherConfig.SALT)
     )
+    val notificationToken = mediumText("notificationToken")
 
     val isEmailConfirmed = bool("isEmailConfirmed").default(false)
     val registrationDate = datetime("registrationDate").default(LocalDateTime.now())

@@ -52,6 +52,10 @@ fun Application.configureAuthentication() {
         getVerifyEmailRoute()
         postResetPasswordRoute()
 
+        authenticate(SECURITY_SCHEME){
+            postSetNotificationTokenRoute()
+        }
+
         authenticate(REFRESH_SECURITY_SCHEME){
             getRefreshTokenRoute()
         }

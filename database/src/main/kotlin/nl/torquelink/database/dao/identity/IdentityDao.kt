@@ -12,6 +12,7 @@ class IdentityDao(id : EntityID<UUID>) : IdentityEntity(id, IdentityTable) {
     var username by IdentityTable.username
     var email by IdentityTable.email
     var passwordHash by IdentityTable.passwordHash
+    var notificationToken by IdentityTable.notificationToken
 
     var isEmailConfirmed by IdentityTable.isEmailConfirmed
     var registrationDate by IdentityTable.registrationDate

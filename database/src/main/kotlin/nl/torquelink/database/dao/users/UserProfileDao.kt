@@ -5,7 +5,7 @@ import nl.torquelink.database.interfaces.CoreEntity
 import nl.torquelink.database.interfaces.CoreEntityClass
 import nl.torquelink.database.tables.users.UserCarsTable
 import nl.torquelink.database.tables.users.UserProfileTable
-import nl.torquelink.shared.enums.CountryCode
+import nl.torquelink.shared.enums.generic.CountryCode
 import nl.torquelink.shared.models.profile.UserProfiles
 import org.jetbrains.exposed.dao.id.EntityID
 import java.time.LocalDate

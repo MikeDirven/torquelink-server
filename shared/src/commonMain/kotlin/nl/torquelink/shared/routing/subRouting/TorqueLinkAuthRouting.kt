@@ -20,6 +20,14 @@ interface TorqueLinkAuthRouting {
         )
     }
 
+    @Resource("notifications")
+    class Notifications {
+        @Resource("token")
+        class Token(
+            val parent: Notifications = Notifications()
+        )
+    }
+
     @Resource("email")
     class Email {
         @Resource("verify")

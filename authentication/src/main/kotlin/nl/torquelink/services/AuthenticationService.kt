@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets
 import java.sql.SQLException
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.*
 import java.util.concurrent.atomic.AtomicReference
 
 class AuthenticationService internal constructor (
@@ -366,6 +367,14 @@ class AuthenticationService internal constructor (
             resetToken.identity.apply {
                 passwordHash = newPassword
             }
+        }
+    }
+
+    suspend fun setNotificationToken(identityId: UUID, token: String) {
+        database.executeAsync {
+            val identity = IdentityDao.get(identityId)
+
+            identity.notificationToken = token
         }
     }
 

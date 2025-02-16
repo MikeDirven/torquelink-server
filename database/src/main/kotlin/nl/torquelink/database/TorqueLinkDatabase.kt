@@ -22,7 +22,7 @@ object TorqueLinkDatabase : DatabaseHolder(){
 
     init {
         execute {
-            SchemaUtils.create(
+            SchemaUtils.createMissingTablesAndColumns(
                 IdentityTable,
                 AccessTokenStoreTable,
                 RememberTokenStoreTable,
