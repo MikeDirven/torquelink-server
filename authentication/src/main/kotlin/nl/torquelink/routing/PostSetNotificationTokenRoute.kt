@@ -7,6 +7,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import nl.torquelink.SECURITY_SCHEME
 import nl.torquelink.constants.AUTHENTICATION_TAG
 import nl.torquelink.database.dao.identity.AccessTokenStoreDao
 import nl.torquelink.database.tables.identity.AccessTokenStoreTable
@@ -19,6 +20,7 @@ import org.jetbrains.exposed.sql.and
 fun postSetNotificationTokenRouteDoc(ref: OpenApiRoute) = ref.apply {
     tags = setOf(AUTHENTICATION_TAG)
     description = "Set notification token for identity"
+    securitySchemeNames(SECURITY_SCHEME)
     request {
         body<String>()
     }

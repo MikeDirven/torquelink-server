@@ -1,4 +1,4 @@
-package nl.torquelink.shared.enums.groups
+package nl.torquelink.shared.enums.group
 
 enum class MemberListVisibility {
     VISIBLE,

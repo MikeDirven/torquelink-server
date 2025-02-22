@@ -71,7 +71,7 @@ fun Application.configureSwagger(){
         }
 
         specAssigner = { _, _ -> PluginConfigDsl.DEFAULT_SPEC_ID }
-        pathFilter = { _, url -> url.firstOrNull() != "hidden" }
+        pathFilter = { _, url -> url.firstOrNull() in listOf("api", "auth") }
         ignoredRouteSelectors = emptySet()
         outputFormat = OutputFormat.JSON
     }

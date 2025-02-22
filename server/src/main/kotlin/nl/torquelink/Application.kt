@@ -19,7 +19,6 @@ fun Application.module() {
     // Configure plugins
     install(Resources)
     configureSerialization()
-    configureDatabases()
     configureMonitoring()
     configureExceptions()
     configureHTTP()

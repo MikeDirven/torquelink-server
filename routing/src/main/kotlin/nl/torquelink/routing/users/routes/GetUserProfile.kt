@@ -8,26 +8,18 @@ import io.ktor.server.routing.*
 import nl.torquelink.SECURITY_SCHEME
 import nl.torquelink.database.TorqueLinkDatabase
 import nl.torquelink.database.dao.users.UserProfileDao
-import nl.torquelink.database.pagination.paginated
-import nl.torquelink.database.tables.users.UserProfileTable
 import nl.torquelink.nl.torquelink.routing.users.constants.UsersRoutingConstants
-import nl.torquelink.shared.filters.exposed.createSqlExpression
-import nl.torquelink.shared.filters.ktor.addFilters
-import nl.torquelink.shared.filters.ktor.filters
-import nl.torquelink.shared.models.Pageable
+import nl.torquelink.nl.torquelink.routing.users.exception.UserApiExceptions
 import nl.torquelink.shared.models.profile.UserProfiles
-import nl.torquelink.shared.pagination.ktor.addPagination
 import nl.torquelink.shared.routing.subRouting.TorqueLinkUserRoutingV1
 
-fun getUserProfilesRouteDoc(ref: OpenApiRoute) = ref.apply {
+fun getUserProfileRouteDoc(ref: OpenApiRoute) = ref.apply {
     tags = setOf(UsersRoutingConstants.TAG)
-    description = "Get user profiles"
+    description = "Get user profile"
     securitySchemeNames(SECURITY_SCHEME)
-    addFilters()
-    addPagination()
     response {
         HttpStatusCode.OK to {
-            body<Pageable<UserProfiles.UserProfileDto>>()
+            body<UserProfiles.UserProfileDto>()
         }
         HttpStatusCode.Unauthorized to {
             body<String>()
@@ -35,14 +27,13 @@ fun getUserProfilesRouteDoc(ref: OpenApiRoute) = ref.apply {
     }
 }
 
-fun Route.getUserProfilesRoute() {
-    get<TorqueLinkUserRoutingV1.Profiles>(::getUserProfilesRouteDoc) {
+fun Route.getUserProfileRoute() {
+    get<TorqueLinkUserRoutingV1.Profiles.ByUseId>(::getUserProfilesRouteDoc) { resource ->
         TorqueLinkDatabase.executeAsync {
-            val filters = filters()
-            val loadedUserProfiles: Pageable<UserProfiles.UserProfileDto> = UserProfileDao.paginated(
-                converter = UserProfileDao::toResponseWithoutSettings,
-                filter = UserProfileTable.createSqlExpression(filters)
-            )
+            val loadedUserProfiles: UserProfiles.UserProfileDto = UserProfileDao.findById(
+                resource.userId
+            )?.toResponseWithoutSettings()
+                ?: throw UserApiExceptions.UserProfileIdNotFoundException(resource.userId)
 
             call.respond(HttpStatusCode.OK, loadedUserProfiles)
         }

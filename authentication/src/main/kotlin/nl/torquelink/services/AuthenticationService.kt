@@ -38,7 +38,7 @@ class AuthenticationService internal constructor (
                 username
             ).replace(
                 "%verificationUrl%",
-                "http://torquelink.nl/email/verify?verification=$verificationToken"
+                "http://torquelink.nl/auth/email/verify?verification=$verificationToken"
             )
         } ?: throw AuthExceptions.UnableToCreateEmailVerification
     }
@@ -54,7 +54,7 @@ class AuthenticationService internal constructor (
                 username
             ).replace(
                 "%resetUrl%",
-                "http://torquelink.nl/password/reset?resetToken=$resetToken"
+                "http://torquelink.nl/auth/password/reset?resetToken=$resetToken"
             )
         } ?: throw AuthExceptions.UnableToCreateEmailVerification
     }

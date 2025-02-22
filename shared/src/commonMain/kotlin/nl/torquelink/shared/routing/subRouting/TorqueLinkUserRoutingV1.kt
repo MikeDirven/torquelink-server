@@ -14,9 +14,20 @@ interface TorqueLinkUserRoutingV1 {
         @Contextual val filters: Filters? = null
     ){
         @Resource("{userId}")
-        class ById(
+        class ByUseId(
             val parent: Profiles = Profiles(),
             val userId: Long
         )
+
+        @Resource("cars")
+        class Cars(
+            val parent: Profiles = Profiles()
+        ){
+            @Resource("{carId}")
+            class ByCarId(
+                val parent: Cars = Cars(),
+                val carId: Long
+            )
+        }
     }
 }

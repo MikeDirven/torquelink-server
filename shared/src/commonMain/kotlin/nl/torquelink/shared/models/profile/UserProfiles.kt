@@ -13,7 +13,7 @@ sealed interface UserProfiles {
     val city: String?
 
     @Serializable
-    data class UserProfileNewDto(
+    data class UserProfileCreateDto(
         override val firstName: String,
         override val lastName: String,
         override val dateOfBirth: String,

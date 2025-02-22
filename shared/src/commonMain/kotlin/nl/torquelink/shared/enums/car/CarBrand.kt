@@ -1,4 +1,4 @@
-package nl.torquelink.shared.enums.cars
+package nl.torquelink.shared.enums.car
 
 enum class CarBrand {
     ABARTH,

@@ -10,26 +10,28 @@ import io.ktor.server.routing.*
 import nl.torquelink.SECURITY_SCHEME
 import nl.torquelink.database.TorqueLinkDatabase
 import nl.torquelink.database.dao.identity.AccessTokenStoreDao
+import nl.torquelink.database.dao.users.UserCarDao
 import nl.torquelink.database.dao.users.UserProfileDao
 import nl.torquelink.database.tables.identity.AccessTokenStoreTable
+import nl.torquelink.database.tables.users.UserProfileTable
 import nl.torquelink.exception.AuthExceptions
 import nl.torquelink.nl.torquelink.routing.users.constants.UsersRoutingConstants
+import nl.torquelink.nl.torquelink.routing.users.exception.UserApiExceptions
 import nl.torquelink.shared.models.auth.AuthenticationResponses
-import nl.torquelink.shared.models.profile.UserProfiles
+import nl.torquelink.shared.models.profile.UserCars
 import nl.torquelink.shared.routing.subRouting.TorqueLinkUserRoutingV1
 import org.jetbrains.exposed.sql.and
-import java.time.LocalDate
 
-fun postUserProfilesRouteDoc(ref: OpenApiRoute) = ref.apply {
+fun postUserCarRouteDoc(ref: OpenApiRoute) = ref.apply {
     tags = setOf(UsersRoutingConstants.TAG)
-    description = "create user profiles"
+    description = "create user car"
     securitySchemeNames(SECURITY_SCHEME)
     request {
-        body<UserProfiles.UserProfileCreateDto>()
+        body<UserCars.UserCarCreateDto>()
     }
     response {
         HttpStatusCode.OK to {
-            body<UserProfiles.UserProfileDto>()
+            body<UserCars.UserCarWithEngineDetailsDto>()
         }
         HttpStatusCode.Unauthorized to {
             body<String>()
@@ -37,9 +39,9 @@ fun postUserProfilesRouteDoc(ref: OpenApiRoute) = ref.apply {
     }
 }
 
-fun Route.postUserProfileRoute() {
-    post<TorqueLinkUserRoutingV1.Profiles>(::postUserProfilesRouteDoc) {
-        val request = call.receive<UserProfiles.UserProfileCreateDto>()
+fun Route.postUserCarRoute() {
+    post<TorqueLinkUserRoutingV1.Profiles.Cars>(::postUserCarRouteDoc) {
+        val request = call.receive<UserCars.UserCarCreateDto>()
         val response =  TorqueLinkDatabase.execute {
             val authentication = call.principal<AuthenticationResponses>()
                 ?: throw AuthExceptions.NoValidTokenFound
@@ -51,15 +53,27 @@ fun Route.postUserProfileRoute() {
                 )
             }.singleOrNull()?.identity ?: throw AuthExceptions.NoValidTokenFound
 
-            UserProfileDao.new {
-                identity = currentIdentity
-                firstName = request.firstName
-                lastName = request.lastName
-                dateOfBirth = LocalDate.parse(request.dateOfBirth)
-                phoneNumber = request.phoneNumber
-                country = request.country
-                city = request.city
-            }.toResponseWithoutSettings()
+            val currentProfile = UserProfileDao.find {
+                UserProfileTable.identity eq currentIdentity.id
+            }.singleOrNull() ?: throw UserApiExceptions.UserProfileNotFoundException
+
+            UserCarDao.new {
+                user = currentProfile.id
+                licensePlate = request.licensePlate
+                vehicleType = request.vehicleType
+                brand = request.brand
+                tradeName = request.tradeName
+                primaryColor = request.primaryColor
+                secondaryColor = request.secondaryColor
+                driveReadyMassWeight = request.driveReadyMassWeight
+                variant = request.variant
+                model = request.model
+
+                // Engine details
+                numberOfCylinders = request.numberOfCylinders
+                cylinderCapacity = request.cylinderCapacity
+                readyMassPower = request.readyMassPower
+            }.toResponseWithEngineDetails()
         }
 
         call.respond(HttpStatusCode.OK, response)

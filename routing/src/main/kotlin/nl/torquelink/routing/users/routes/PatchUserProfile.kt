@@ -4,7 +4,6 @@ import io.github.smiley4.ktorswaggerui.dsl.routes.OpenApiRoute
 import io.github.smiley4.ktorswaggerui.dsl.routing.resources.patch
 import io.ktor.http.*
 import io.ktor.server.auth.*
-import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -16,6 +15,7 @@ import nl.torquelink.database.tables.identity.AccessTokenStoreTable
 import nl.torquelink.database.tables.users.UserProfileTable
 import nl.torquelink.exception.AuthExceptions
 import nl.torquelink.nl.torquelink.routing.users.constants.UsersRoutingConstants
+import nl.torquelink.nl.torquelink.routing.users.exception.UserApiExceptions
 import nl.torquelink.shared.models.auth.AuthenticationResponses
 import nl.torquelink.shared.models.profile.UserProfiles
 import nl.torquelink.shared.routing.subRouting.TorqueLinkUserRoutingV1
@@ -42,7 +42,7 @@ fun patchUserProfilesRouteDoc(ref: OpenApiRoute) = ref.apply {
 }
 
 fun Route.patchUserProfileRoute() {
-    patch<TorqueLinkUserRoutingV1.Profiles.ById>(::patchUserProfilesRouteDoc) { resource ->
+    patch<TorqueLinkUserRoutingV1.Profiles>(::patchUserProfilesRouteDoc) {
         val request = call.receive<UserProfiles.UserProfileUpdateDto>()
         val response =  TorqueLinkDatabase.execute {
             val authentication = call.principal<AuthenticationResponses>()
@@ -74,7 +74,8 @@ fun Route.patchUserProfileRoute() {
                 it.phoneNumberIsPublic = request.phoneNumberIsPublic?: it.phoneNumberIsPublic
                 it.countryIsPublic = request.countryIsPublic?: it.countryIsPublic
                 it.cityIsPublic = request.cityIsPublic?: it.cityIsPublic
-            }?.toResponseWithSettings() ?: throw NotFoundException()
+            }?.toResponseWithSettings()
+                ?: throw UserApiExceptions.UserProfileNotFoundException
         }
 
         call.respond(HttpStatusCode.OK, response)
