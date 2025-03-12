@@ -17,6 +17,7 @@ object UserProfileTable : CoreTable("TL_D_User_Profiles") {
     val country = enumeration<CountryCode>("country")
     val city = varchar("city", 255).nullable()
     val avatar = largeText("avatar").nullable()
+    val avatarUrl = largeText("avatarUrl").nullable()
 
     // Privacy settings
     val emailIsPublic = bool("emailIsPublic").default(false)

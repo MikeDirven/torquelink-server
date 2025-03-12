@@ -17,6 +17,7 @@ dependencies {
     implementation(libs.bundles.exposed)
 
     implementation(project(":database"))
+    implementation(project(":domain"))
     implementation(project(":shared"))
     implementation(project(":authentication"))
 }

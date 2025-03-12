@@ -5,8 +5,8 @@ import nl.torquelink.database.dao.groups.GroupMemberDao
 import nl.torquelink.database.dao.identity.IdentityDao
 import nl.torquelink.database.interfaces.CoreEntity
 import nl.torquelink.database.interfaces.CoreEntityClass
-import nl.torquelink.database.tables.groups.GroupIntermediateTable
 import nl.torquelink.database.tables.events.EventIntermediateTable
+import nl.torquelink.database.tables.groups.GroupIntermediateTable
 import nl.torquelink.database.tables.users.UserCarsTable
 import nl.torquelink.database.tables.users.UserProfileTable
 import nl.torquelink.shared.enums.generic.CountryCode
@@ -28,6 +28,7 @@ class UserProfileDao(id : EntityID<Long>) : CoreEntity(id, UserProfileTable) {
     var country by UserProfileTable.country
     var city by UserProfileTable.city
     var avatar by UserProfileTable.avatar
+    var avatarUrl by UserProfileTable.avatarUrl
 
     // References
     val userCars by UserCarDao referrersOn UserCarsTable.user
@@ -53,7 +54,7 @@ class UserProfileDao(id : EntityID<Long>) : CoreEntity(id, UserProfileTable) {
             if(phoneNumberIsPublic) phoneNumber else "****",
             if(countryIsPublic) country else CountryCode.PRIVATE,
             if(cityIsPublic) city else "****",
-            avatar ?: "",
+            avatarUrl ?: "",
             userCars.map(UserCarDao::toResponseWithoutEngineDetails),
 
             emailIsPublic,
@@ -76,7 +77,7 @@ class UserProfileDao(id : EntityID<Long>) : CoreEntity(id, UserProfileTable) {
             if(phoneNumberIsPublic) phoneNumber else "****",
             if(countryIsPublic) country else CountryCode.PRIVATE,
             if(cityIsPublic) city else "****",
-            avatar ?: "",
+            avatarUrl ?: "",
             userCars.map(UserCarDao::toResponseWithoutEngineDetails)
         )
     }

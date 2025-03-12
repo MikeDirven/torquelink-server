@@ -20,6 +20,14 @@ sealed interface UserProfiles {
         override val phoneNumber: String,
         override val country: CountryCode,
         override val city: String,
+
+        val emailIsPublic: Boolean,
+        val firstNameIsPublic: Boolean,
+        val lastNameIsPublic: Boolean,
+        val dateOfBirthIsPublic: Boolean,
+        val phoneNumberIsPublic: Boolean,
+        val countryIsPublic: Boolean,
+        val cityIsPublic: Boolean
     ) : UserProfiles
 
     @Serializable

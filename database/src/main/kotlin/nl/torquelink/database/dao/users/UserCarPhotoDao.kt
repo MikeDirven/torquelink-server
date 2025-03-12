@@ -8,9 +8,9 @@ import org.jetbrains.exposed.dao.id.EntityID
 
 class UserCarPhotoDao(id : EntityID<Long>) : CoreEntity(id, UserCarsPhotoTable) {
     companion object : CoreEntityClass<UserCarPhotoDao>(UserCarsPhotoTable)
-
-    val photoUrl by UserCarsPhotoTable.photoUrl
-    val sequence by UserCarsPhotoTable.sequence
+    var userCar by UserCarsPhotoTable.userCar
+    var photoUrl by UserCarsPhotoTable.photoUrl
+    var sequence by UserCarsPhotoTable.sequence
 
     fun toResponse() : UserCarsPhotos.UserCarPhotoDto {
         return UserCarsPhotos.UserCarPhotoDto(

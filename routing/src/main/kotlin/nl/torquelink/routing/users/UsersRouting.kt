@@ -13,8 +13,10 @@ fun Application.configureUsersRouting() {
             getUserProfileRoute()
             postUserProfileRoute()
             patchUserProfileRoute()
+            patchUserProfileAvatarRoute()
 
             postUserCarRoute()
+            postUserCarPhotoRoute()
         }
     }
 }

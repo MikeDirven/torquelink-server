@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "nl.torquelink"
-version = "0.0.0.9"
+version = "0.0.0.11"
 
 fun MavenArtifactRepository.githubCredentials() {
     credentials {

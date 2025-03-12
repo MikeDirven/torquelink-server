@@ -28,7 +28,7 @@ fun getUserProfileRouteDoc(ref: OpenApiRoute) = ref.apply {
 }
 
 fun Route.getUserProfileRoute() {
-    get<TorqueLinkUserRoutingV1.Profiles.ByUseId>(::getUserProfilesRouteDoc) { resource ->
+    get<TorqueLinkUserRoutingV1.Profiles.ByUserId>(::getUserProfilesRouteDoc) { resource ->
         TorqueLinkDatabase.executeAsync {
             val loadedUserProfiles: UserProfiles.UserProfileDto = UserProfileDao.findById(
                 resource.userId
