@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.javatime.date
 
 object UserProfileTable : CoreTable("TL_D_User_Profiles") {
     override val active = bool("active").default(true)
-    val identity = reference("identity", IdentityTable).uniqueIndex()
+    val identity = reference("identity", IdentityTable)
 
     // Details
     val firstName = varchar("first_name", 100)

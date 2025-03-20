@@ -68,7 +68,7 @@ fun Route.postLoginRoute() {
             userProfile?.let { userProfileDao ->
                 when (responseObject.second) {
                     is AuthenticationResponses.AuthenticationResponseWithRemember -> {
-                        call.respond(
+                        call.respond<AuthenticationResponses>(
                             AuthenticationResponses.AuthenticationResponseWithRememberAndProfile(
                                 responseObject.second.accessToken,
                                 responseObject.second.refreshToken,
@@ -79,7 +79,7 @@ fun Route.postLoginRoute() {
                     }
 
                     else -> {
-                        call.respond(
+                        call.respond<AuthenticationResponses>(
                             AuthenticationResponses.AuthenticationResponseWithProfile(
                                 responseObject.second.accessToken,
                                 responseObject.second.refreshToken,
@@ -88,7 +88,7 @@ fun Route.postLoginRoute() {
                         )
                     }
                 }
-            } ?: call.respond(HttpStatusCode.OK, responseObject.second)
+            } ?: call.respond<AuthenticationResponses>(HttpStatusCode.OK, responseObject.second)
         }
     }
 }
