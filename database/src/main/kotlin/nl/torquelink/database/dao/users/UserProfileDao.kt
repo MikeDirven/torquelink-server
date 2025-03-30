@@ -6,7 +6,7 @@ import nl.torquelink.database.dao.identity.IdentityDao
 import nl.torquelink.database.interfaces.CoreEntity
 import nl.torquelink.database.interfaces.CoreEntityClass
 import nl.torquelink.database.tables.events.EventIntermediateTable
-import nl.torquelink.database.tables.groups.GroupIntermediateTable
+import nl.torquelink.database.tables.groups.GroupMembersTable
 import nl.torquelink.database.tables.users.UserCarsTable
 import nl.torquelink.database.tables.users.UserProfileTable
 import nl.torquelink.shared.enums.generic.CountryCode
@@ -32,7 +32,7 @@ class UserProfileDao(id : EntityID<Long>) : CoreEntity(id, UserProfileTable) {
 
     // References
     val userCars by UserCarDao referrersOn UserCarsTable.user
-    val groups by GroupMemberDao via GroupIntermediateTable
+    val groups by GroupMemberDao referrersOn GroupMembersTable.userId
     val events by EventDao via EventIntermediateTable
 
     // Settings

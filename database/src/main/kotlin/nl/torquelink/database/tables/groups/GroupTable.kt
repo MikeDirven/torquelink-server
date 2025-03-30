@@ -5,7 +5,7 @@ import nl.torquelink.shared.enums.group.MemberListVisibility
 import org.jetbrains.exposed.sql.Column
 
 object GroupTable : CoreTable("TL_D_Groups") {
-    override val active: Column<Boolean> = bool("active")
+    override val active: Column<Boolean> = bool("active").default(true)
 
     val groupName = varchar("groupName", 100).index()
     val description = varchar("description", 255).nullable()

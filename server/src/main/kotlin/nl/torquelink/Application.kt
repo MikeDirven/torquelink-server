@@ -7,7 +7,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import nl.torquelink.config.*
-import nl.torquelink.nl.torquelink.routing.users.configureUsersRouting
+import nl.torquelink.routing.groups.configureGroupsRouting
+import nl.torquelink.routing.users.configureUsersRouting
 import java.io.File
 
 fun main(args: Array<String>) {
@@ -27,6 +28,7 @@ fun Application.module() {
 
     // Configure routing
     configureUsersRouting()
+    configureGroupsRouting()
 
     routing {
         get("/.well-known/assetlinks.json"){

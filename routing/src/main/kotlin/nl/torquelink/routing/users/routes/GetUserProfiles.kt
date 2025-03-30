@@ -1,4 +1,4 @@
-package nl.torquelink.nl.torquelink.routing.users.routes
+package nl.torquelink.routing.users.routes
 
 import io.github.smiley4.ktorswaggerui.dsl.routes.OpenApiRoute
 import io.github.smiley4.ktorswaggerui.dsl.routing.resources.get
@@ -10,7 +10,7 @@ import nl.torquelink.database.TorqueLinkDatabase
 import nl.torquelink.database.dao.users.UserProfileDao
 import nl.torquelink.database.pagination.paginated
 import nl.torquelink.database.tables.users.UserProfileTable
-import nl.torquelink.nl.torquelink.routing.users.constants.UsersRoutingConstants
+import nl.torquelink.routing.users.constants.UsersRoutingConstants
 import nl.torquelink.shared.filters.exposed.createSqlExpression
 import nl.torquelink.shared.filters.ktor.addFilters
 import nl.torquelink.shared.filters.ktor.filters

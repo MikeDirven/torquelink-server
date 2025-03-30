@@ -371,7 +371,7 @@ class AuthenticationService internal constructor (
     }
 
     suspend fun setNotificationToken(identityId: UUID, token: String) {
-        database.executeAsync {
+        database.execute() {
             val identity = IdentityDao.get(identityId)
 
             identity.notificationToken = token

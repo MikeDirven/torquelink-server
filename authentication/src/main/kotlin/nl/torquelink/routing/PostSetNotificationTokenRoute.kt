@@ -9,6 +9,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import nl.torquelink.SECURITY_SCHEME
 import nl.torquelink.constants.AUTHENTICATION_TAG
+import nl.torquelink.database.TorqueLinkDatabase
 import nl.torquelink.database.dao.identity.AccessTokenStoreDao
 import nl.torquelink.database.tables.identity.AccessTokenStoreTable
 import nl.torquelink.exception.AuthExceptions
@@ -34,19 +35,21 @@ fun postSetNotificationTokenRouteDoc(ref: OpenApiRoute) = ref.apply {
 
 fun Route.postSetNotificationTokenRoute() {
     post<TorqueLinkAuthRouting.Notifications.Token>(::postSetNotificationTokenRouteDoc) {
-        val authentication = call.principal<AuthenticationResponses>()
-            ?: throw AuthExceptions.NoValidTokenFound
-        val tokenFromRequest = call.receive<String>()
+        TorqueLinkDatabase.executeAsync {
+            val authentication = call.principal<AuthenticationResponses>()
+                ?: throw AuthExceptions.NoValidTokenFound
+            val tokenFromRequest = call.receive<String>()
 
-        // get currentIdentity
-        val currentIdentity = AccessTokenStoreDao.find {
-            AccessTokenStoreTable.accessToken eq authentication.accessToken and (
-                    AccessTokenStoreTable.active eq true
-                    )
-        }.singleOrNull()?.identity ?: throw AuthExceptions.NoValidTokenFound
+            // get currentIdentity
+            val currentIdentity = AccessTokenStoreDao.find {
+                AccessTokenStoreTable.accessToken eq authentication.accessToken and (
+                        AccessTokenStoreTable.active eq true
+                        )
+            }.singleOrNull()?.identity ?: throw AuthExceptions.NoValidTokenFound
 
-        AuthenticationService().setNotificationToken(currentIdentity.id.value, tokenFromRequest)
+            AuthenticationService().setNotificationToken(currentIdentity.id.value, tokenFromRequest)
 
-        call.respond(HttpStatusCode.OK)
+            call.respond(HttpStatusCode.OK)
+        }
     }
 }

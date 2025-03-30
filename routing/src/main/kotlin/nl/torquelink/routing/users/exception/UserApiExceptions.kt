@@ -1,4 +1,4 @@
-package nl.torquelink.nl.torquelink.routing.users.exception
+package nl.torquelink.routing.users.exception
 
 sealed class UserApiExceptions(override val message: String? = null) : Exception() {
     object UserProfileNotFoundException : UserApiExceptions(

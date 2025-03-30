@@ -1,4 +1,4 @@
-package nl.torquelink.nl.torquelink.routing.users.routes
+package nl.torquelink.routing.users.routes
 
 import io.github.smiley4.ktorswaggerui.dsl.routes.OpenApiRoute
 import io.github.smiley4.ktorswaggerui.dsl.routing.resources.patch
@@ -14,8 +14,8 @@ import nl.torquelink.database.TorqueLinkDatabase
 import nl.torquelink.database.dao.users.UserCarDao
 import nl.torquelink.database.dao.users.UserCarPhotoDao
 import nl.torquelink.domain.environment.Environment
-import nl.torquelink.nl.torquelink.routing.users.constants.UsersRoutingConstants
-import nl.torquelink.nl.torquelink.routing.users.exception.UserApiExceptions
+import nl.torquelink.routing.users.constants.UsersRoutingConstants
+import nl.torquelink.routing.users.exception.UserApiExceptions
 import nl.torquelink.shared.models.profile.UserProfiles
 import nl.torquelink.shared.routing.subRouting.TorqueLinkUserRoutingV1
 import java.io.File
@@ -26,6 +26,7 @@ fun postUserCarPhotoRouteDoc(ref: OpenApiRoute) = ref.apply {
     description = "update user profile avatar"
     securitySchemeNames(SECURITY_SCHEME)
     request {
+        pathParameter<Long>("carId")
         multipartBody {
             part<File>("avatar")
         }

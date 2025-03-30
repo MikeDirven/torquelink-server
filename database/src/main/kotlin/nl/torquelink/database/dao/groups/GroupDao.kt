@@ -12,22 +12,22 @@ import org.jetbrains.exposed.dao.id.EntityID
 class GroupDao(id : EntityID<Long>) : CoreEntity(id, GroupTable) {
     companion object : CoreEntityClass<GroupDao>(GroupTable)
 
-    val groupName by GroupTable.groupName
-    val description by GroupTable.description
+    var groupName by GroupTable.groupName
+    var description by GroupTable.description
 
-    val logoUrl by GroupTable.logoUrl
-    val coverPhotoUrl by GroupTable.coverPhotoUrl
-    val privateGroup by GroupTable.privateGroup
-    val joinRequestsEnabled by GroupTable.joinRequestsEnabled
-    val memberListVisibility by GroupTable.memberListVisibility
+    var logoUrl by GroupTable.logoUrl
+    var coverPhotoUrl by GroupTable.coverPhotoUrl
+    var privateGroup by GroupTable.privateGroup
+    var joinRequestsEnabled by GroupTable.joinRequestsEnabled
+    var memberListVisibility by GroupTable.memberListVisibility
 
-    val facebookUrl by GroupTable.facebookUrl
-    val twitterUrl by GroupTable.twitterUrl
-    val instagramUrl by GroupTable.instagramUrl
-    val linkedInUrl by GroupTable.linkedInUrl
-    val websiteUrl by GroupTable.websiteUrl
+    var facebookUrl by GroupTable.facebookUrl
+    var twitterUrl by GroupTable.twitterUrl
+    var instagramUrl by GroupTable.instagramUrl
+    var linkedInUrl by GroupTable.linkedInUrl
+    var websiteUrl by GroupTable.websiteUrl
 
-    val members by GroupMemberDao via GroupIntermediateTable
+    var members by GroupMemberDao via GroupIntermediateTable
     val events by EventDao referrersOn EventTable.group
 
     fun toGroupDto() : Groups.GroupDto {

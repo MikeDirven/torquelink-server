@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.javatime.datetime
 
 object EventTable : CoreTable("TL_D_Events") {
-    override val active: Column<Boolean> = bool("active")
+    override val active: Column<Boolean> = bool("active").default(true)
     val group = reference("group", GroupTable)
 
     val eventTitle = varchar("eventTitle", 255)

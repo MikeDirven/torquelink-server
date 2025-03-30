@@ -1,4 +1,4 @@
-package nl.torquelink.nl.torquelink.routing.users.routes
+package nl.torquelink.routing.users.routes
 
 import io.github.smiley4.ktorswaggerui.dsl.routes.OpenApiRoute
 import io.github.smiley4.ktorswaggerui.dsl.routing.resources.post
@@ -12,8 +12,8 @@ import nl.torquelink.database.dao.users.UserCarDao
 import nl.torquelink.database.dao.users.UserProfileDao
 import nl.torquelink.database.tables.users.UserProfileTable
 import nl.torquelink.extensions.identity
-import nl.torquelink.nl.torquelink.routing.users.constants.UsersRoutingConstants
-import nl.torquelink.nl.torquelink.routing.users.exception.UserApiExceptions
+import nl.torquelink.routing.users.constants.UsersRoutingConstants
+import nl.torquelink.routing.users.exception.UserApiExceptions
 import nl.torquelink.shared.models.profile.UserCars
 import nl.torquelink.shared.routing.subRouting.TorqueLinkUserRoutingV1
 

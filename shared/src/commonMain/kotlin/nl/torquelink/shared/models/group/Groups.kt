@@ -59,16 +59,16 @@ sealed interface Groups {
     data class GroupCreateDto(
         override val groupName: String,
         override val description: String,
-        override val logoUrl: String?,
-        override val coverPhotoUrl: String?,
+        override val logoUrl: String? = null,
+        override val coverPhotoUrl: String? = null,
         override val privateGroup: Boolean = false,
         override val joinRequestsEnabled: Boolean = true,
         override val memberListVisibility: MemberListVisibility = MemberListVisibility.VISIBLE,
-        override val facebookUrl: String?,
-        override val instagramUrl: String?,
-        override val twitterUrl: String?,
-        override val linkedInUrl: String?,
-        override val websiteUrl: String?
+        override val facebookUrl: String? = null,
+        override val instagramUrl: String? = null,
+        override val twitterUrl: String? = null,
+        override val linkedInUrl: String? = null,
+        override val websiteUrl: String? = null
     ) : Groups
 
     @Serializable
