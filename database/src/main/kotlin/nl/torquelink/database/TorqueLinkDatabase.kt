@@ -10,6 +10,7 @@ import nl.torquelink.database.tables.groups.GroupTable
 import nl.torquelink.database.tables.identity.*
 import nl.torquelink.database.tables.users.UserCarsTable
 import nl.torquelink.database.tables.users.UserProfileTable
+import nl.torquelink.domain.environment.Environment
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -20,10 +21,10 @@ object TorqueLinkDatabase : DatabaseHolder() {
     private val connection: Database by lazy {
         Database.connect(
             HikariDataSource().apply {
-                jdbcUrl = "jdbc:mysql://localhost:3306/torque_link"
+                jdbcUrl = Environment.databaseUrl
                 driverClassName = "com.mysql.cj.jdbc.Driver"
-                username = "TORQUELINK_API"
-                password = "Nevr!d1579288"
+                username = Environment.databaseUser
+                password = Environment.databasePass
                 maximumPoolSize = 4
                 isReadOnly = false
                 transactionIsolation = "TRANSACTION_SERIALIZABLE"
