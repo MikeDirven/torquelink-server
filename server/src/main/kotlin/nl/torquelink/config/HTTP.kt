@@ -11,6 +11,7 @@ fun Application.configureHTTP() {
         allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.Authorization)
         allowHeader(HttpHeaders.Accept)
+        allowHeader("torquelink-access")
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
     }
     install(Compression)

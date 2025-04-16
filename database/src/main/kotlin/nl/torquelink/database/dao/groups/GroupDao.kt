@@ -6,6 +6,7 @@ import nl.torquelink.database.interfaces.CoreEntityClass
 import nl.torquelink.database.tables.events.EventTable
 import nl.torquelink.database.tables.groups.GroupIntermediateTable
 import nl.torquelink.database.tables.groups.GroupTable
+import nl.torquelink.shared.enums.group.GroupMemberRole
 import nl.torquelink.shared.models.group.Groups
 import org.jetbrains.exposed.dao.id.EntityID
 
@@ -33,6 +34,13 @@ class GroupDao(id : EntityID<Long>) : CoreEntity(id, GroupTable) {
     fun toGroupDto() : Groups.GroupDto {
         return Groups.GroupDto(
             id = this.id.value,
+            memberCount = this.members.count { dao ->
+                dao.role in listOf(GroupMemberRole.MEMBER, GroupMemberRole.ADMIN)
+            }.toLong(),
+            followerCount = this.members.count { dao ->
+                dao.role == GroupMemberRole.FOLLOWER
+            }.toLong(),
+            eventCount = this.events.count(),
             groupName = this.groupName,
             description = this.description,
             logoUrl = this.logoUrl,

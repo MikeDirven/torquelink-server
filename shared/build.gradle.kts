@@ -1,7 +1,6 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -10,7 +9,7 @@ plugins {
 }
 
 group = "nl.torquelink"
-version = "0.0.0.11"
+version = "0.0.0.13-alpha1"
 
 fun MavenArtifactRepository.githubCredentials() {
     credentials {
@@ -21,6 +20,7 @@ fun MavenArtifactRepository.githubCredentials() {
 
 publishing {
     repositories {
+        mavenLocal()
         maven {
             name = "GitHub"
             url = uri("https://maven.pkg.github.com/MikeDirven/torquelink-server")
@@ -30,16 +30,16 @@ publishing {
 }
 
 kotlin {
+    jvmToolchain(17)
     iosArm64()
     iosX64()
     iosSimulatorArm64()
-    wasmJs()
-    jvmToolchain(17)
-    jvm() {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_17
+    wasmJs {
+        browser {
+            binaries.library()
         }
-        withJava()
+    }
+    jvm() {
         testRuns["test"].executionTask.configure {
             useJUnitPlatform()
         }

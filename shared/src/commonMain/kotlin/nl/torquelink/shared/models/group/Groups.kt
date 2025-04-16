@@ -22,6 +22,9 @@ sealed interface Groups {
     @Serializable
     data class GroupDto(
         val id: Long,
+        val memberCount: Long,
+        val followerCount: Long,
+        val eventCount: Long,
         override val groupName: String,
         override val description: String?,
         override val logoUrl: String?,

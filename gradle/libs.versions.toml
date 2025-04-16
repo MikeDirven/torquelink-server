@@ -2,7 +2,7 @@
 [versions]
 exposed-version = "0.58.0"
 mysql-version = "8.0.33"
-kotlin-version = "2.1.0"
+kotlin-version = "2.1.20"
 ktor-version = "3.0.3"
 logback-version = "1.5.16"
 smiley-swagger = "4.1.6"
