@@ -36,10 +36,12 @@ fun getGroupsRouteDoc(ref: OpenApiRoute) = ref.apply {
 }
 
 fun Route.getGroupsRoute() {
-    get<TorqueLinkGroupRoutingV1.Groups>(::getGroupsRouteDoc) {
+    get<TorqueLinkGroupRoutingV1.Groups>(::getGroupsRouteDoc) { resource ->
         TorqueLinkDatabase.executeAsync {
             val filters = filters()
             val loadedGroups: Pageable<Groups.GroupDto> = GroupDao.paginated(
+                page = resource.page,
+                size = resource.limit,
                 converter = GroupDao::toGroupDto,
                 filter = GroupTable.createSqlExpression(filters)
             )

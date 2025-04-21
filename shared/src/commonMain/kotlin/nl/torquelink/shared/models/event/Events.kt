@@ -32,7 +32,7 @@ sealed interface Events {
     @Serializable
     data class EventWithDetailsDto(
         val id: Long,
-        val group: Groups,
+        val group: Groups.GroupDto,
         val attendees: List<UserProfiles.UserProfileDto>,
         override val eventTitle: String,
         override val eventDescription: String,
