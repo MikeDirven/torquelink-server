@@ -18,7 +18,7 @@ ktor {
     docker {
         jreVersion.set(JavaVersion.VERSION_21)
         localImageName.set("torque-link-server")
-        imageTag.set("0.0.4")
+        imageTag.set("0.0.1")
         portMappings.set(listOf(
             io.ktor.plugin.features.DockerPortMapping(
                 80,

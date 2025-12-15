@@ -38,7 +38,7 @@ class AuthenticationService internal constructor (
                 username
             ).replace(
                 "%verificationUrl%",
-                "http://torquelink.nl/auth/email/verify?verification=$verificationToken"
+                "http://dev.torquelink.nl/auth/email/verify?verification=$verificationToken"
             )
         } ?: throw AuthExceptions.UnableToCreateEmailVerification
     }
@@ -54,7 +54,7 @@ class AuthenticationService internal constructor (
                 username
             ).replace(
                 "%resetUrl%",
-                "http://torquelink.nl/auth/password/reset?resetToken=$resetToken"
+                "http://dev.torquelink.nl/auth/password/reset?resetToken=$resetToken"
             )
         } ?: throw AuthExceptions.UnableToCreateEmailVerification
     }
@@ -204,9 +204,9 @@ class AuthenticationService internal constructor (
         }
     }
 
-    private fun IdentityDao.generateTokens(remember: Boolean = false) : AuthenticationResponses{
+    private fun IdentityDao.generateTokens(remember: Boolean = false, currentToken: RememberTokenStoreDao? = null) : AuthenticationResponses{
         val rememberToken = if(remember) {
-            RememberTokenStoreDao.new {
+            currentToken ?: RememberTokenStoreDao.new {
                 identity = this@generateTokens // Set the identity
                 token = tokenGenerator.generateRememberToken(username)
             }
@@ -311,7 +311,7 @@ class AuthenticationService internal constructor (
             // Update expiration date
             rememberToken.expirationDate = LocalDate.now().plusYears(1)
 
-            rememberToken.identity to rememberToken.identity.generateTokens(true)
+            rememberToken.identity to rememberToken.identity.generateTokens(true, rememberToken)
         }
     }
 

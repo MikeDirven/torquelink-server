@@ -11,14 +11,17 @@ import nl.torquelink.database.TorqueLinkDatabase
 import nl.torquelink.database.dao.groups.GroupDao
 import nl.torquelink.database.dao.groups.GroupMemberDao
 import nl.torquelink.database.dao.users.UserProfileDao
+import nl.torquelink.database.tables.groups.GroupTable
 import nl.torquelink.database.tables.users.UserProfileTable
 import nl.torquelink.extensions.identity
 import nl.torquelink.routing.groups.constants.GroupsRoutingConstants
+import nl.torquelink.routing.groups.exceptions.GroupApiExceptions
 import nl.torquelink.routing.users.exception.UserApiExceptions
 import nl.torquelink.shared.enums.group.GroupMemberRole
 import nl.torquelink.shared.models.group.Groups
 import nl.torquelink.shared.routing.subRouting.TorqueLinkGroupRoutingV1
 import org.jetbrains.exposed.sql.SizedCollection
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 fun postGroupRouteDoc(ref: OpenApiRoute) = ref.apply {
     tags = setOf(GroupsRoutingConstants.TAG)
@@ -44,6 +47,11 @@ fun Route.postGroupRoute() {
             val response =  TorqueLinkDatabase.execute {
                 val identity = identity()
 
+                // Check if group name is already in use
+                if(GroupDao.count(GroupTable.groupName eq request.groupName) > 0)
+                    throw GroupApiExceptions.GroupNameAlreadyExists(request.groupName)
+
+                // Find current user profile
                 val currentProfile = UserProfileDao.find {
                     UserProfileTable.identity eq identity.id
                 }.singleOrNull() ?: throw UserApiExceptions.UserProfileNotFoundException
@@ -76,7 +84,6 @@ fun Route.postGroupRoute() {
                 )
 
                 // Return the group with details
-
                 newGroup.toGroupWithDetailsDto()
             }
 

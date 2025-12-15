@@ -11,6 +11,8 @@ import nl.torquelink.database.dao.groups.GroupDao
 import nl.torquelink.database.pagination.paginated
 import nl.torquelink.database.tables.groups.GroupTable
 import nl.torquelink.routing.groups.constants.GroupsRoutingConstants
+import nl.torquelink.shared.filters.Filters
+import nl.torquelink.shared.filters.enums.FilterOperators
 import nl.torquelink.shared.filters.exposed.createSqlExpression
 import nl.torquelink.shared.filters.ktor.addFilters
 import nl.torquelink.shared.filters.ktor.filters
@@ -38,7 +40,13 @@ fun getGroupsRouteDoc(ref: OpenApiRoute) = ref.apply {
 fun Route.getGroupsRoute() {
     get<TorqueLinkGroupRoutingV1.Groups>(::getGroupsRouteDoc) { resource ->
         TorqueLinkDatabase.executeAsync {
-            val filters = filters()
+            val filters = (filters() ?: Filters()).apply {
+                addFilter(
+                    fieldName = "privateGroup",
+                    filterOperator = FilterOperators.IS_EQUAL,
+                    false
+                )
+            }
             val loadedGroups: Pageable<Groups.GroupDto> = GroupDao.paginated(
                 page = resource.page,
                 size = resource.limit,

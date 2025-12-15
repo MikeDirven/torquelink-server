@@ -71,7 +71,7 @@ class GroupDao(id : EntityID<Long>) : CoreEntity(id, GroupTable) {
             instagramUrl = this.instagramUrl,
             linkedInUrl = this.linkedInUrl,
             websiteUrl = this.websiteUrl,
-            members = this.members.map { it.toResponse() },
+            members = this.members.filter { it.active }.map { it.toResponse() },
             events = this.events.map { it.toEventDto() }
         )
     }
