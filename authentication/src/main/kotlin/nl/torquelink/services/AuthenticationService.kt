@@ -216,6 +216,8 @@ class AuthenticationService internal constructor (
             identity = this@generateTokens
             accessToken = tokenGenerator.generateAccessToken(username)
             refreshToken = tokenGenerator.generateRefreshToken(username)
+            accessTokenExpireDateTime = LocalDateTime.now().plusHours(3)
+            refreshTokenExpireDateTime = LocalDateTime.now().plusHours(30)
         }
 
         return rememberToken?.let { rememberTokenHolder ->

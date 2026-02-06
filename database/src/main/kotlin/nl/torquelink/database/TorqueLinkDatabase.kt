@@ -22,7 +22,7 @@ object TorqueLinkDatabase : DatabaseHolder() {
         Database.connect(
             HikariDataSource().apply {
                 jdbcUrl = Environment.databaseUrl
-                driverClassName = "com.mysql.cj.jdbc.Driver"
+                driverClassName = "org.mariadb.jdbc.Driver"
                 username = Environment.databaseUser
                 password = Environment.databasePass
                 maximumPoolSize = 4

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "nl.torquelink"
-version = "0.0.1"
+version = "0.0.2"
 
 application {
     mainClass.set("nl.torquelink.ApplicationKt")
@@ -18,7 +18,7 @@ ktor {
     docker {
         jreVersion.set(JavaVersion.VERSION_21)
         localImageName.set("torque-link-server")
-        imageTag.set("0.0.1")
+        imageTag.set("0.0.2")
         portMappings.set(listOf(
             io.ktor.plugin.features.DockerPortMapping(
                 80,
