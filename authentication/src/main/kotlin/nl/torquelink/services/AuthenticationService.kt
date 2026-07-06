@@ -67,7 +67,7 @@ class AuthenticationService internal constructor (
                 setAuthenticator(
                     DefaultAuthenticator(
                         "info@torquelink.nl",
-                        "Nevr!d1579288"
+                        "******"
                     )
                 )
                 isStartTLSEnabled = true
